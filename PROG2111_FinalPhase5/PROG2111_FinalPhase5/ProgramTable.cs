@@ -25,10 +25,6 @@ namespace PROG2111_FinalPhase5
             ProgramDataTable.Columns.Add("durationInTerms", typeof(int));
             ProgramDataTable.Columns.Add("isAvalible", typeof(bool));
 
-            //pre load stuff
-            ProgramDataTable.Rows.Add(1, "math", "idk", 3, true);
-            ProgramDataTable.Rows.Add(2, "c++", "idk", 2, false);
-            ProgramDataTable.Rows.Add(3, "writing", "idk", 2, true);
         }
 
         public DataTable ProgramDataTable = new DataTable("ProgramTable");

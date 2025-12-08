@@ -39,5 +39,17 @@ namespace PROG2111_FinalPhase5
             readStudentDataGrid.Visibility = Visibility.Hidden;
             readProgramDataGrid.Visibility = Visibility.Hidden;
         }
+
+        private void btnFillTables_Click(object sender, RoutedEventArgs e)
+        {
+            //add programs (id, name, credential, duration, avalible)
+            db.programTable.Rows.Add(1, "math", "idk", 3, true);
+            db.programTable.Rows.Add(2, "c++", "idk", 2, false);
+            db.programTable.Rows.Add(3, "writing", "idk", 2, true);
+
+            //add students (id, program id, fName, lName, email, dob, enrollment date)
+            db.studentTable.Rows.Add(1, 1, "Fred", "Smith", "Fred@mail.ca", new DateTime(2001, 5, 12), new DateTime(2025, 9, 1));
+            db.studentTable.Rows.Add(2, 3, "john", "apple", "applej@mail.ca", new DateTime(1991, 4, 22), new DateTime(2025, 9, 1));
+        }
     }
 }

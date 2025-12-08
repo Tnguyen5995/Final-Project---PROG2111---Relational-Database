@@ -148,6 +148,9 @@
             <TabItem Header="Delete">
                 
             </TabItem>
+            <TabItem Header="Fill Tables">
+                <Button Content="FILL" Margin="10" FontSize="100" Name="btnFillTables" Click="btnFillTables_Click"/>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>
