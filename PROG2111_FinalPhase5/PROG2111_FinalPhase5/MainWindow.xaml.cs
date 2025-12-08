@@ -21,6 +21,7 @@ namespace PROG2111_FinalPhase5
     public partial class MainWindow : Window
     {
         private static readonly string ComboBoxString = "System.Windows.Controls.ComboBoxItem: ";
+        Database db = new Database();
         public MainWindow()
         {
             InitializeComponent();

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PROG2111_FinalPhase5"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="800">
     <Grid>
         <TabControl>
             <TabItem Header="Create">
@@ -29,13 +29,13 @@
                     <!--student grid-->
                     <Grid Grid.Row="1" Name="createStudentGrid" Visibility="Visible">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="2*"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <!--id-->
@@ -73,7 +73,7 @@
                             <Label Content="studentDateEnrolled(dd/mm/yyyy)" HorizontalAlignment="Center"/>
                             <DatePicker Width="300" Name="dateCreateStudentDateEnrolled"/>
                         </StackPanel>
-                        <Button Grid.Row="7" Margin="300, 5" Name="btnStudentSubmit" Content="Submit"/>
+                        <Button Grid.Row="7" Margin="300, 5" Name="btnStudentSubmit" Content="Submit" Click="btnStudentSubmit_Click"/>
                     </Grid>
                 </Grid>
             </TabItem>
