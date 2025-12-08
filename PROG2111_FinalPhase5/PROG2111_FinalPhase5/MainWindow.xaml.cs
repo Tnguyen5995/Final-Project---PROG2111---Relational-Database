@@ -25,6 +25,8 @@ namespace PROG2111_FinalPhase5
         public MainWindow()
         {
             InitializeComponent();
+            readStudentDataGrid.ItemsSource = db.studentTable.DefaultView;
+            readProgramDataGrid.ItemsSource = db.programTable.DefaultView;
         }
 
         /// <summary>
@@ -33,6 +35,9 @@ namespace PROG2111_FinalPhase5
         private void SetAllTablesInvisible()
         {
             createStudentGrid.Visibility = Visibility.Hidden;
+            createProgramGrid.Visibility = Visibility.Hidden;
+            readStudentDataGrid.Visibility = Visibility.Hidden;
+            readProgramDataGrid.Visibility = Visibility.Hidden;
         }
     }
 }

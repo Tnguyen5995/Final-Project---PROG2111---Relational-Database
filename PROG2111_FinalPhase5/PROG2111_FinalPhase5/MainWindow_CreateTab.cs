@@ -19,6 +19,7 @@ namespace PROG2111_FinalPhase5
     {
         private void createComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            SetAllTablesInvisible();
             string selection = createComboBox.SelectedItem.ToString();
             selection = selection.Remove(0, ComboBoxString.Length);
             //MessageBox.Show(selection);
@@ -28,6 +29,9 @@ namespace PROG2111_FinalPhase5
                 case "Student Table":
                     createStudentGrid.Visibility = Visibility.Visible;
                     break;
+                case "Program Table":
+                    createProgramGrid.Visibility = Visibility.Visible; 
+                    break;
             }
         }
         private void btnStudentSubmit_Click(object sender, RoutedEventArgs e)
@@ -36,55 +40,55 @@ namespace PROG2111_FinalPhase5
 
             //student id
             int studentID;
-            txtCreateStudentID.Foreground = Brushes.Black;
+            txtCreateStudentID.Background = Brushes.Transparent;
             if (!int.TryParse(txtCreateStudentID.Text, out studentID))
             {
-                txtCreateStudentID.Foreground = Brushes.Red;
+                txtCreateStudentID.Background = Brushes.Red;
                 error = true;
             }
             if(StudentTable.StudentIds.Contains(studentID))
             {
                 txtCreateStudentID.Text = "Id Already Exists";
-                txtCreateStudentID.Foreground = Brushes.Red;
+                txtCreateStudentID.Background = Brushes.Red;
                 error = true;
             }
 
             //program id
             int StudentProgramId;
-            txtCreateStudentProgramID.Foreground = Brushes.Black;
+            txtCreateStudentProgramID.Background = Brushes.Transparent;
             if (!int.TryParse(txtCreateStudentProgramID.Text, out StudentProgramId))
             {
-                txtCreateStudentProgramID.Foreground = Brushes.Red;
+                txtCreateStudentProgramID.Background = Brushes.Red;
                 error = true;
             }
-            if(StudentTable.StudentProgramIds.Contains(StudentProgramId))
+            if(!ProgramTable.ProgramIds.Contains(StudentProgramId))
             {
-                txtCreateStudentProgramID.Text = "Id Already Exists";
-                txtCreateStudentProgramID.Foreground = Brushes.Red;
+                txtCreateStudentProgramID.Text = "Program Id Doesnt Exist";
+                txtCreateStudentProgramID.Background = Brushes.Red;
                 error = true;
             }
 
             //firstname
-            txtCreateStudentFirstName.Foreground = Brushes.Black;
+            txtCreateStudentFirstName.Background = Brushes.Transparent;
             if(!(txtCreateStudentFirstName.Text.Length > 0))
             {
-                txtCreateStudentFirstName.Foreground = Brushes.Red;
+                txtCreateStudentFirstName.Background = Brushes.Red;
                 error = true;
             }
 
             //lastname
-            txtCreateStudentLastName.Foreground = Brushes.Black;
-            if(!(txtCreateStudentFirstName.Text.Length > 0))
+            txtCreateStudentLastName.Background = Brushes.Transparent;
+            if(!(txtCreateStudentLastName.Text.Length > 0))
             {
-                txtCreateStudentLastName.Foreground = Brushes.Red;
+                txtCreateStudentLastName.Background = Brushes.Red;
                 error = true;
             }
 
             //email
-            txtCreateStudentEmail.Foreground = Brushes.Black;
-            if(!(txtCreateStudentFirstName.Text.Length > 0))
+            txtCreateStudentEmail.Background = Brushes.Transparent;
+            if(!(txtCreateStudentEmail.Text.Length > 0))
             {
-                txtCreateStudentEmail.Foreground = Brushes.Red;
+                txtCreateStudentEmail.Background = Brushes.Red;
                 error = true;
             }
 
@@ -111,7 +115,6 @@ namespace PROG2111_FinalPhase5
             }
 
             StudentTable.StudentIds.Add(studentID);
-            StudentTable.StudentProgramIds.Add(StudentProgramId);
             DataRow dr = db.studentTable.NewRow();
 
             dr[0] = studentID;
@@ -131,6 +134,79 @@ namespace PROG2111_FinalPhase5
             txtCreateStudentEmail.Text = string.Empty;
             dateCreateStudentDateOfBirth.Text = string.Empty;
             dateCreateStudentDateEnrolled.Text = string.Empty;
+            return;
+        }
+        private void btnProgramSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            bool error = false;
+
+            //id
+            int programId;
+            txtCreateProgramID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateProgramID.Text, out programId))
+            {
+                txtCreateProgramID.Background = Brushes.Red;
+                error = true;
+            }
+            if(ProgramTable.ProgramIds.Contains(programId))
+            {
+                txtCreateProgramID.Text = "Id already exists";
+                txtCreateProgramID.Background = Brushes.Red;
+                error = true;
+            }
+
+            //name
+            txtCreateProgramName.Background = Brushes.Transparent;
+            if(!(txtCreateProgramName.Text.Length > 0))
+            {
+                txtCreateProgramName.Background = Brushes.Red;
+                error = true;
+            }
+
+            //credential
+            txtCreateProgramCredential.Background = Brushes.Transparent;
+            if(!(txtCreateProgramCredential.Text.Length > 0))
+            {
+                txtCreateProgramCredential.Background= Brushes.Red;
+                error = true;
+            }
+
+            //duration
+            int duration;
+            txtCreateProgramDuration.Background = Brushes.Transparent;
+            if(!int.TryParse(txtCreateProgramDuration.Text, out duration))
+            {
+                txtCreateProgramDuration.Background= Brushes.Red;
+                error = true;
+            }
+
+            //avalible
+            bool? avalible = chkCreateProgramAvaliblility.IsChecked;
+            if(avalible == null)
+            {
+                error = true;
+            }
+
+            if(error)
+            {
+                return;
+            }
+
+            ProgramTable.ProgramIds.Add(programId);
+            DataRow dr = db.programTable.NewRow();
+
+            dr[0] = programId;
+            dr[1] = txtCreateProgramName.Text;
+            dr[2] = txtCreateProgramCredential.Text;
+            dr[3] = duration;
+            dr[4] = avalible;
+
+            db.programTable.Rows.Add(dr);
+
+            txtCreateProgramID.Text = string.Empty;
+            txtCreateProgramName.Text = string.Empty;
+            txtCreateProgramCredential.Text = string.Empty;
+            txtCreateProgramDuration.Text = string.Empty;
             return;
         }
     }

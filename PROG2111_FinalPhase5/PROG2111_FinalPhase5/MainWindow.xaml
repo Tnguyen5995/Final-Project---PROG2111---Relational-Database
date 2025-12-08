@@ -25,9 +25,9 @@
                         <ComboBoxItem Name="createCbiInstructorTable" Content="Instructor Table"/>
                         <ComboBoxItem Name="createCbiInstructorAssignmentTable" Content="Instructor Assignment Table"/>
                     </ComboBox>
-                    
+
                     <!--student grid-->
-                    <Grid Grid.Row="1" Name="createStudentGrid" Visibility="Visible">
+                    <Grid Grid.Row="1" Name="createStudentGrid" Visibility="Hidden">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
@@ -75,10 +75,72 @@
                         </StackPanel>
                         <Button Grid.Row="7" Margin="300, 5" Name="btnStudentSubmit" Content="Submit" Click="btnStudentSubmit_Click"/>
                     </Grid>
+
+
+                    <!--Program Grid-->
+                    <Grid Grid.Row="1" Name="createProgramGrid" Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <!--id-->
+                        <StackPanel Grid.Row="0">
+                            <Label Content="programID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateProgramID"/>
+                        </StackPanel>
+                        <!--program name-->
+                        <StackPanel Grid.Row="1">
+                            <Label Content="programName" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateProgramName"/>
+                        </StackPanel>
+                        <!--credential-->
+                        <StackPanel Grid.Row="2">
+                            <Label Content="programCredential" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateProgramCredential"/>
+                        </StackPanel>
+                        <!--Duration-->
+                        <StackPanel Grid.Row="3">
+                            <Label Content="programDurationInTerms" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateProgramDuration"/>
+                        </StackPanel>
+                        <!--isAvalible-->
+                        <StackPanel Grid.Row="4">
+                            <Label Content="programAvalibility" HorizontalAlignment="Center"/>
+                            <CheckBox Name="chkCreateProgramAvaliblility" HorizontalAlignment="Center" IsChecked="True"/>
+                        </StackPanel>
+                        <Button Grid.Row="5" Margin="300, 5" Name="btnProgramSubmit" Content="Submit" Click="btnProgramSubmit_Click"/>
+                    </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="Read">
-                
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="15*"/>
+                    </Grid.RowDefinitions>
+
+                    <ComboBox Name="readComboBox" SelectionChanged="readComboBox_SelectionChanged">
+                        <ComboBoxItem Name="readCbiStudentTable" Content="Student Table"/>
+                        <ComboBoxItem Name="readCbiProgramTable" Content="Program Table"/>
+                        <ComboBoxItem Name="readCbiProgramCourseTable" Content="Program Course Table"/>
+                        <ComboBoxItem Name="readCbiCourseTable" Content="Course Table"/>
+                        <ComboBoxItem Name="readCbiCourseOfferingTable" Content="Course Offering Table"/>
+                        <ComboBoxItem Name="readCbiCourseEnrollmentTable" Content="Course Enrollment Table"/>
+                        <ComboBoxItem Name="readCbiInstructorTable" Content="Instructor Table"/>
+                        <ComboBoxItem Name="readCbiInstructorAssignmentTable" Content="Instructor Assignment Table"/>
+                    </ComboBox>
+
+                    <!--grids-->
+                    <DataGrid Name="readStudentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+                    <DataGrid Name="readProgramDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+
+
+                </Grid>
             </TabItem>
             <TabItem Header="Update">
                 

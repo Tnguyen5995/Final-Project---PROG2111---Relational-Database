@@ -17,18 +17,22 @@ namespace PROG2111_FinalPhase5
     {
 		public StudentTable()
 		{
-            StudentDataTable.Columns.Add("StudentId", typeof(int));
+            DataColumn studentId = new DataColumn("StudentId", typeof(int));
+            StudentDataTable.Columns.Add(studentId);
+            StudentDataTable.PrimaryKey = new DataColumn[] { studentId };
             StudentDataTable.Columns.Add("programId", typeof(int));
             StudentDataTable.Columns.Add("firstName", typeof(string));
             StudentDataTable.Columns.Add("lastName", typeof(string));
             StudentDataTable.Columns.Add("email", typeof(string));
             StudentDataTable.Columns.Add("dateOfBirth", typeof(DateTime));
             StudentDataTable.Columns.Add("dateEnrolled", typeof(DateTime));
+
+            //pre load stuff
+            //StudentDataTable.Rows.Add(1, 1, "fred", "smith", "fred@mail.com", DateTime.Now, DateTime.UtcNow);
         }
 
         public DataTable StudentDataTable = new DataTable("StudentTable");
         public static List<int> StudentIds = new List<int>();
-        public static List<int> StudentProgramIds = new List<int>();
     }//end of StudentTable
 
 }//end of PROG2111_FinalPhase5
