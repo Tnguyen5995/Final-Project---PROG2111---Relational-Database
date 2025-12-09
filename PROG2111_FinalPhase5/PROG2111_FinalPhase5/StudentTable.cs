@@ -17,7 +17,7 @@ namespace PROG2111_FinalPhase5
     {
 		public StudentTable()
 		{
-            DataColumn studentId = new DataColumn("StudentId", typeof(int));
+            DataColumn studentId = new DataColumn("studentId", typeof(int));
             StudentDataTable.Columns.Add(studentId);
             StudentDataTable.PrimaryKey = new DataColumn[] { studentId };
             StudentDataTable.Columns.Add("programId", typeof(int));

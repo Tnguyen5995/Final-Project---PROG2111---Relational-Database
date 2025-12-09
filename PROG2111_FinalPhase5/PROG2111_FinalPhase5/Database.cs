@@ -19,12 +19,23 @@ namespace PROG2111_FinalPhase5
 		{
             ds.Tables.Add(studentTable);
             ds.Tables.Add(programTable);
-            StudentProgramRelation = new DataRelation("FK_Program_Student", programTable.Columns["programId"], studentTable.Columns["studentId"]);
+            ds.Tables.Add(courseTable);
+            ds.Tables.Add(programCourseTable);
+
+            StudentProgramIDRelation = new DataRelation("FK_Student_ProgramId", programTable.Columns["programId"], studentTable.Columns["studentId"]);
+            ProgramCourseProgramIDRelation = new DataRelation("FK_ProgramCourse_ProgramId", programTable.Columns["programId"], programCourseTable.Columns["programId"]);
+            ProgramCourseCourseIDRelation = new DataRelation("FK_ProgramCourse_CourseId", courseTable.Columns["courseId"], programCourseTable.Columns["courseId"]);
         }
-        public DataRelation StudentProgramRelation;
+        public DataRelation StudentProgramIDRelation;
+        public DataRelation ProgramCourseProgramIDRelation;
+        public DataRelation ProgramCourseCourseIDRelation;
+
         public DataSet ds = new DataSet("DataSet");
+
         public DataTable studentTable = new StudentTable().StudentDataTable;
         public DataTable programTable = new ProgramTable().ProgramDataTable;
+        public DataTable courseTable = new CourseTable().CourseDataTable;
+        public DataTable programCourseTable = new ProgramCourseTable().ProgramCourseDataTable;
     }//end of Database
 
 }//end of PROG2111_FinalPhase5
