@@ -35,6 +35,9 @@ namespace PROG2111_FinalPhase5
                 case "Course Table":
                     createCourseGrid.Visibility = Visibility.Visible;
                     break;
+                case "Program Course Table":
+                    createProgramCourseGrid.Visibility = Visibility.Visible;
+                    break;
             }
         }
         private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
@@ -274,6 +277,51 @@ namespace PROG2111_FinalPhase5
             txtCreateCourseTitle.Text = string.Empty;
             txtCreateCourseDescription.Text = string.Empty;
             txtCreateCourseHours.Text = string.Empty;
+        }
+        private void btnCreateProgramCourseSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            bool error = false;
+
+            //program id
+            int programId;
+            txtCreateProgramCourseProgramID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateProgramCourseProgramID.Text, out programId))
+            {
+                txtCreateProgramCourseProgramID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!ProgramTable.ProgramIds.Contains(programId))
+            {
+                txtCreateProgramCourseProgramID.Text = "Id doesnt exists";
+                txtCreateProgramCourseProgramID.Background = Brushes.Red;
+                error = true;
+            }
+            //course id
+            int courseId;
+            txtCreateProgramCourseCourseID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateProgramCourseCourseID.Text, out courseId))
+            {
+                txtCreateProgramCourseCourseID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!CourseTable.CourseIds.Contains(courseId))
+            {
+                txtCreateProgramCourseCourseID.Text = "Id doesnt exists";
+                txtCreateProgramCourseCourseID.Background = Brushes.Red;
+                error = true;
+            }
+
+            if(error)
+            {
+                return;
+            }
+
+            DataRow dr = db.programCourseTable.NewRow();
+            dr[0] = programId;
+            dr[1] = courseId;
+
+            txtCreateProgramCourseProgramID.Text = string.Empty;
+            txtCreateProgramCourseCourseID.Text = string.Empty;
         }
     }
 }

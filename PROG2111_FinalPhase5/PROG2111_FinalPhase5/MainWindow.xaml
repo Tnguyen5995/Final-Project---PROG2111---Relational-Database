@@ -146,6 +146,26 @@
                         </StackPanel>
                         <Button Grid.Row="4" Margin="300, 5" Name="btnCreateCourseSubmit" Content="Submit" Click="btnCreateCourseSubmit_Click"/>
                     </Grid>
+                    <!--Program Course Grid-->
+                    <Grid Grid.Row="1" Name="createProgramCourseGrid" Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <!--program id-->
+                        <StackPanel Grid.Row="0">
+                            <Label Content="programID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateProgramCourseProgramID"/>
+                        </StackPanel>
+                        <!--program id-->
+                        <StackPanel Grid.Row="1">
+                            <Label Content="courseID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateProgramCourseCourseID"/>
+                        </StackPanel>
+                        
+                        <Button Grid.Row="2" Margin="300, 5" Name="btnCreateProgramCourseSubmit" Content="Submit" Click="btnCreateProgramCourseSubmit_Click"/>
+                    </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="Read">
@@ -171,6 +191,7 @@
                     <DataGrid Name="readStudentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
                     <DataGrid Name="readProgramDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
                     <DataGrid Name="readCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+                    <DataGrid Name="readProgramCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 
 
 

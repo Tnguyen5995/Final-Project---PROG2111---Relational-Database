@@ -28,6 +28,7 @@ namespace PROG2111_FinalPhase5
             readStudentDataGrid.ItemsSource = db.studentTable.DefaultView;
             readProgramDataGrid.ItemsSource = db.programTable.DefaultView;
             readCourseDataGrid.ItemsSource = db.courseTable.DefaultView;
+            readProgramCourseDataGrid.ItemsSource = db.programCourseTable.DefaultView;
         }
 
         /// <summary>
@@ -38,14 +39,19 @@ namespace PROG2111_FinalPhase5
             createStudentGrid.Visibility = Visibility.Hidden;
             createProgramGrid.Visibility = Visibility.Hidden;
             createCourseGrid.Visibility = Visibility.Hidden;
+            createProgramCourseGrid.Visibility = Visibility.Hidden;
 
             readStudentDataGrid.Visibility = Visibility.Hidden;
             readProgramDataGrid.Visibility = Visibility.Hidden;
             readCourseDataGrid.Visibility = Visibility.Hidden;
+            readProgramCourseDataGrid.Visibility = Visibility.Hidden;
         }
 
         private void btnFillTables_Click(object sender, RoutedEventArgs e)
         {
+            //disable to not allow overlapping entries
+            btnFillTables.IsEnabled = false;
+
             //add programs (id, name, credential, duration, avalible)
             db.programTable.Rows.Add(1, "SET", "adv Diploma", 6, true);
             db.programTable.Rows.Add(2, "mEng", "degree", 8, false);
@@ -70,7 +76,11 @@ namespace PROG2111_FinalPhase5
             CourseTable.CourseIds.Add(1);
             CourseTable.CourseIds.Add(2);
             CourseTable.CourseIds.Add(3);
-        }
 
+            //add program course (program id, course id)
+            db.programCourseTable.Rows.Add(1, 2);
+            db.programCourseTable.Rows.Add(2, 1);
+            db.programCourseTable.Rows.Add(3, 3);
+        }
     }
 }

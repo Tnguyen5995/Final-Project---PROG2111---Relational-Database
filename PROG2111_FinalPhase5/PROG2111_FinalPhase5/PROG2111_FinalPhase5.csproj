@@ -107,6 +107,7 @@
     <Compile Include="CourseTable.cs" />
     <Compile Include="DbConnectionFactory.cs" />
     <Compile Include="MainWindow_ReadTab.cs" />
+    <Compile Include="ProgramCourseTable.cs" />
     <Compile Include="ProgramModel.cs" />
     <Compile Include="ProgramTable.cs" />
     <Compile Include="StudentModel.cs" />
