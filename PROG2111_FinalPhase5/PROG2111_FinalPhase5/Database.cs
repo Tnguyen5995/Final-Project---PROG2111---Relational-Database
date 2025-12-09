@@ -1,41 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace PROG2111_FinalPhase5
 {
     /*
-	 * FILE : Database.cs
-	 * PROJECT : $safeprojectname$
-	 * PROGRAMMER : George Shapka
-	 * FIRST VERSION : 12/8/2025 2:17:53 PM
-	 */
+     * FILE : Database.cs
+     * PROJECT : PROG2111_FinalPhase5
+     * PROGRAMMER : George Shapka, Tuan Thanh Nguyen
+     * FIRST VERSION : 12/08/2025
+     * 
+     * PURPOSE :
+     *   Wrapper around repository classes used by the WPF UI to obtain
+     *   DataTables for Student and Program.
+     */
     internal class Database
     {
-		public Database()
-		{
-            ds.Tables.Add(studentTable);
-            ds.Tables.Add(programTable);
-            ds.Tables.Add(courseTable);
-            ds.Tables.Add(programCourseTable);
+        public DataTable studentTable { get; private set; }
+        public DataTable programTable { get; private set; }
 
-            StudentProgramIDRelation = new DataRelation("FK_Student_ProgramId", programTable.Columns["programId"], studentTable.Columns["studentId"]);
-            ProgramCourseProgramIDRelation = new DataRelation("FK_ProgramCourse_ProgramId", programTable.Columns["programId"], programCourseTable.Columns["programId"]);
-            ProgramCourseCourseIDRelation = new DataRelation("FK_ProgramCourse_CourseId", courseTable.Columns["courseId"], programCourseTable.Columns["courseId"]);
+        private readonly ProgramRepository _programRepository;
+        private readonly StudentRepository _studentRepository;
+
+        public Database()
+        {
+            _programRepository = new ProgramRepository();
+            _studentRepository = new StudentRepository();
+
+            RefreshProgramTable();
+            RefreshStudentTable();
         }
-        public DataRelation StudentProgramIDRelation;
-        public DataRelation ProgramCourseProgramIDRelation;
-        public DataRelation ProgramCourseCourseIDRelation;
 
-        public DataSet ds = new DataSet("DataSet");
+        public void RefreshProgramTable()
+        {
+            programTable = _programRepository.GetAllProgramsAsDataTable();
+        }
 
-        public DataTable studentTable = new StudentTable().StudentDataTable;
-        public DataTable programTable = new ProgramTable().ProgramDataTable;
-        public DataTable courseTable = new CourseTable().CourseDataTable;
-        public DataTable programCourseTable = new ProgramCourseTable().ProgramCourseDataTable;
-    }//end of Database
-
-}//end of PROG2111_FinalPhase5
+        public void RefreshStudentTable()
+        {
+            studentTable = _studentRepository.GetAllStudentsAsDataTable();
+        }
+    }
+}
