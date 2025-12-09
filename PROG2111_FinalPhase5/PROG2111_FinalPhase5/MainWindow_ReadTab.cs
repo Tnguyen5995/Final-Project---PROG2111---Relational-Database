@@ -42,6 +42,9 @@ namespace PROG2111_FinalPhase5
                 case "Course Offering Table":
                     readCourseOfferingDataGrid.Visibility = Visibility.Visible;
                     break;
+                case "Course Enrollment Table":
+                    readCourseEnrollmentDataGrid.Visibility = Visibility.Visible;
+                    break;
             }
         }
 

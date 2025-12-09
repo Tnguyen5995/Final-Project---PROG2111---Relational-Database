@@ -44,6 +44,9 @@ namespace PROG2111_FinalPhase5
 				case "Course Offering Table":
                     createCourseOfferingGrid.Visibility = Visibility.Visible;
 					break;
+				case "Course Enrollment Table":
+                    createCourseEnrollmentGrid.Visibility = Visibility.Visible;
+					break;
 			}
 		}
 		private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
@@ -279,6 +282,7 @@ namespace PROG2111_FinalPhase5
 			dr[3] = hours;
 
 			db.courseTable.Rows.Add(dr);
+
 			txtCreateCourseID.Text = string.Empty;
 			txtCreateCourseTitle.Text = string.Empty;
 			txtCreateCourseDescription.Text = string.Empty;
@@ -325,6 +329,8 @@ namespace PROG2111_FinalPhase5
 			DataRow dr = db.programCourseTable.NewRow();
 			dr[0] = programId;
 			dr[1] = courseId;
+
+			db.programCourseTable.Rows.Add(dr);
 
 			txtCreateProgramCourseProgramID.Text = string.Empty;
 			txtCreateProgramCourseCourseID.Text = string.Empty;
@@ -392,6 +398,8 @@ namespace PROG2111_FinalPhase5
 			dr[3] = txtCreateInstructorEmail.Text;
 			dr[4] = hireDate;
 			dr[5] = txtCreateInstructorOfficeLocation.Text;
+
+			db.instructorTable.Rows.Add(dr);
 
 			txtCreateInstructorID.Text = string.Empty;
 			txtCreateInstructorFirstName.Text = string.Empty;
@@ -527,6 +535,8 @@ namespace PROG2111_FinalPhase5
             dr[9] = maxCapacity;
             dr[10] = txtCourseOfferingRoomLocation.Text;
 
+			db.CourseOfferingTable.Rows.Add(dr);
+
 			txtCourseOfferingID.Text = string.Empty;
 			txtCourseOfferingCourseID.Text = string.Empty;
 			txtCourseOfferingInstructorID.Text = string.Empty;
@@ -538,6 +548,85 @@ namespace PROG2111_FinalPhase5
 			txtCourseOfferingDeliveryMode.Text = string.Empty;
 			txtCourseOfferingMaxCapacity.Text = string.Empty;
 			txtCourseOfferingRoomLocation.Text = string.Empty;
+        }
+
+        private void btnCourseEnrollmentSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            bool error = false;
+
+            //student id
+            int studentID;
+            txtCreateCourseEnrollmentStudentID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateCourseEnrollmentStudentID.Text, out studentID))
+            {
+                txtCreateCourseEnrollmentStudentID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!StudentTable.StudentIds.Contains(studentID))
+            {
+                txtCreateCourseEnrollmentStudentID.Text = "Id doesnt Exist";
+                txtCreateCourseEnrollmentStudentID.Background = Brushes.Red;
+                error = true;
+            }
+
+            //offering id
+            int offeringId;
+            txtCreateCourseEnrollmentOfferingID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateCourseEnrollmentOfferingID.Text, out offeringId))
+            {
+                txtCreateCourseEnrollmentOfferingID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!CourseOfferingTable.OfferingIds.Contains(offeringId))
+            {
+                txtCreateCourseEnrollmentOfferingID.Text = "Id Doesnt Exist";
+                txtCreateCourseEnrollmentOfferingID.Background = Brushes.Red;
+                error = true;
+            }
+
+            //enrollmentStatus
+            txtCreateCourseEnrollmentEnrollmentStatus.Background = Brushes.Transparent;
+            if (!(txtCreateCourseEnrollmentEnrollmentStatus.Text.Length > 0))
+            {
+                txtCreateCourseEnrollmentEnrollmentStatus.Background = Brushes.Red;
+                error = true;
+            }
+
+            //finalGrade
+            float finalGrade;
+            txtCreateCourseEnrollmentFinalGrade.Background = Brushes.Transparent;
+            if (!float.TryParse(txtCreateCourseEnrollmentFinalGrade.Text, out finalGrade))
+            {
+                txtCreateCourseEnrollmentFinalGrade.Background = Brushes.Red;
+                error = true;
+            }
+			if(finalGrade < 0f || finalGrade > 100f)
+			{
+				txtCreateCourseEnrollmentFinalGrade.Text = "Must be between 0 and 100";
+                txtCreateCourseEnrollmentFinalGrade.Background = Brushes.Red;
+                error = true;
+            }
+
+            if (error)
+            {
+                return;
+            }
+
+            DataRow dr = db.CourseEnrollmentTable.NewRow();
+
+            dr[0] = studentID;
+            dr[1] = offeringId;
+            dr[2] = txtCreateCourseEnrollmentEnrollmentStatus.Text;
+            dr[3] = finalGrade;
+
+            db.CourseEnrollmentTable.Rows.Add(dr);
+
+            txtCreateCourseEnrollmentStudentID.Text = string.Empty;
+			txtCreateCourseEnrollmentOfferingID.Text = string.Empty;
+			txtCreateCourseEnrollmentEnrollmentStatus.Text = string.Empty;
+			txtCreateCourseEnrollmentFinalGrade.Text = string.Empty;
+
+            return;
         }
     }
 }

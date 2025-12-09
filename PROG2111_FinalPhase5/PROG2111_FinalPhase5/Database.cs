@@ -23,12 +23,15 @@ namespace PROG2111_FinalPhase5
             ds.Tables.Add(programCourseTable);
             ds.Tables.Add(instructorTable);
             ds.Tables.Add(CourseOfferingTable);
+            ds.Tables.Add(CourseEnrollmentTable);
 
             StudentProgramIDRelation = new DataRelation("FK_Student_ProgramId", programTable.Columns["programId"], studentTable.Columns["studentId"]);
             ProgramCourseProgramIDRelation = new DataRelation("FK_ProgramCourse_ProgramId", programTable.Columns["programId"], programCourseTable.Columns["programId"]);
             ProgramCourseCourseIDRelation = new DataRelation("FK_ProgramCourse_CourseId", courseTable.Columns["courseId"], programCourseTable.Columns["courseId"]);
-            ProgramCourseCourseIDRelation = new DataRelation("FK_CourseOffering_CourseId", courseTable.Columns["courseId"], CourseOfferingTable.Columns["courseId"]);
-            ProgramCourseCourseIDRelation = new DataRelation("FK_CourseOffering_InstructorId", instructorTable.Columns["instructorId"], CourseOfferingTable.Columns["instructorId"]);
+            CourseOfferingCourseIdRelation = new DataRelation("FK_CourseOffering_CourseId", courseTable.Columns["courseId"], CourseOfferingTable.Columns["courseId"]);
+            CourseOfferingInstructorIdRelation = new DataRelation("FK_CourseOffering_InstructorId", instructorTable.Columns["instructorId"], CourseOfferingTable.Columns["instructorId"]);
+            CourseEnrollmentStudentIdRelation = new DataRelation("FK_CourseEnrollment_StudentId", studentTable.Columns["studentId"], CourseEnrollmentTable.Columns["studentId"]);
+            CourseEnrollmentOfferingIdRelation = new DataRelation("FK_CourseEnrollment_OfferingId", CourseOfferingTable.Columns["offeringId"], CourseEnrollmentTable.Columns["offeringId"]);
         }
 
         public DataSet ds = new DataSet("DataSet");
@@ -38,6 +41,8 @@ namespace PROG2111_FinalPhase5
         public DataRelation ProgramCourseCourseIDRelation;
         public DataRelation CourseOfferingCourseIdRelation;
         public DataRelation CourseOfferingInstructorIdRelation;
+        public DataRelation CourseEnrollmentStudentIdRelation;
+        public DataRelation CourseEnrollmentOfferingIdRelation;
 
         public DataTable studentTable = new StudentTable().StudentDataTable;
         public DataTable programTable = new ProgramTable().ProgramDataTable;
@@ -45,6 +50,7 @@ namespace PROG2111_FinalPhase5
         public DataTable programCourseTable = new ProgramCourseTable().ProgramCourseDataTable;
         public DataTable instructorTable = new InstructorTable().InstructorDataTable;
         public DataTable CourseOfferingTable = new CourseOfferingTable().CourseOfferingDataTable;
+        public DataTable CourseEnrollmentTable = new CourseEnrollmentTable().CourseEnrollmentDataTable;
     }//end of Database
 
 }//end of PROG2111_FinalPhase5

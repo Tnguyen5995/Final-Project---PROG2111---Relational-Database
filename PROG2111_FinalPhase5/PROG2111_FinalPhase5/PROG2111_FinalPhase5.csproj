@@ -104,6 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CourseEnrollmentTable.cs" />
     <Compile Include="CourseOfferingTable.cs" />
     <Compile Include="CourseTable.cs" />
     <Compile Include="DbConnectionFactory.cs" />

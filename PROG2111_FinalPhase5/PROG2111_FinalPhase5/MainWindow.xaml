@@ -295,8 +295,39 @@
                         <!-- Submit Button -->
 						<Button Grid.Row="11" Margin="300,5" Name="btnCourseOfferingSubmit" Content="Submit" Click="btnCourseOfferingSubmit_Click"/>
 					</Grid>
-
-				</Grid>
+                    
+                    <!--course enrollment grid-->
+                    <Grid Grid.Row="1" Name="createCourseEnrollmentGrid" Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <!--studentId-->
+                        <StackPanel Grid.Row="0">
+                            <Label Content="studentID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateCourseEnrollmentStudentID"/>
+                        </StackPanel>
+                        <!--courseOfferingId-->
+                        <StackPanel Grid.Row="1">
+                            <Label Content="courseOfferingID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateCourseEnrollmentOfferingID"/>
+                        </StackPanel>
+                        <!--enrollmentStatus-->
+                        <StackPanel Grid.Row="2">
+                            <Label Content="enrollmentStatus" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateCourseEnrollmentEnrollmentStatus"/>
+                        </StackPanel>
+                        <!--finalGrade-->
+                        <StackPanel Grid.Row="3">
+                            <Label Content="finalGrade" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateCourseEnrollmentFinalGrade"/>
+                        </StackPanel>
+                        <Button Grid.Row="4" Margin="300, 5" Name="btnCourseEnrollmentSubmit" Content="Submit" Click="btnCourseEnrollmentSubmit_Click"/>
+                    </Grid>
+                </Grid>
 			</TabItem>
 			<TabItem Header="Read">
 
@@ -324,6 +355,7 @@
 					<DataGrid Name="readProgramCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 					<DataGrid Name="readInstructorDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 					<DataGrid Name="readCourseOfferingDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+					<DataGrid Name="readCourseEnrollmentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 
 
 

@@ -31,6 +31,7 @@ namespace PROG2111_FinalPhase5
             readProgramCourseDataGrid.ItemsSource = db.programCourseTable.DefaultView;
             readInstructorDataGrid.ItemsSource = db.instructorTable.DefaultView;
             readCourseOfferingDataGrid.ItemsSource = db.CourseOfferingTable.DefaultView;
+            readCourseEnrollmentDataGrid.ItemsSource = db.CourseEnrollmentTable.DefaultView;
         }
 
         /// <summary>
@@ -43,11 +44,14 @@ namespace PROG2111_FinalPhase5
             createCourseGrid.Visibility = Visibility.Hidden;
             createProgramCourseGrid.Visibility = Visibility.Hidden;
             createInstructorGrid.Visibility = Visibility.Hidden;
+            createCourseOfferingGrid.Visibility = Visibility.Hidden;
+            createCourseEnrollmentGrid.Visibility = Visibility.Hidden;
 
             readStudentDataGrid.Visibility = Visibility.Hidden;
             readProgramDataGrid.Visibility = Visibility.Hidden;
             readCourseDataGrid.Visibility = Visibility.Hidden;
             readProgramCourseDataGrid.Visibility = Visibility.Hidden;
+            readCourseEnrollmentDataGrid.Visibility = Visibility.Hidden;
         }
 
         private void btnFillTables_Click(object sender, RoutedEventArgs e)
@@ -98,6 +102,10 @@ namespace PROG2111_FinalPhase5
 
             CourseOfferingTable.OfferingIds.Add(1);
             CourseOfferingTable.OfferingIds.Add(2);
+
+            //add courseEnrollment (student id, offering id, enrollmentStatus, finalGrade)
+            db.CourseEnrollmentTable.Rows.Add(1, 2, "enrolled", 0f);
+            db.CourseEnrollmentTable.Rows.Add(2, 1, "complete", 80.33f);
         }
     }
 }
