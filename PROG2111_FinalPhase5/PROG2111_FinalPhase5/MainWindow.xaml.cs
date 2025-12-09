@@ -21,91 +21,99 @@ namespace PROG2111_FinalPhase5
     public partial class MainWindow : Window
     {
         private static readonly string ComboBoxString = "System.Windows.Controls.ComboBoxItem: ";
-        Database db = new Database();
+        private readonly Database db = new Database();
+
         public MainWindow()
         {
             InitializeComponent();
-            readStudentDataGrid.ItemsSource = db.studentTable.DefaultView;
-            readProgramDataGrid.ItemsSource = db.programTable.DefaultView;
-            readCourseDataGrid.ItemsSource = db.courseTable.DefaultView;
-            readProgramCourseDataGrid.ItemsSource = db.programCourseTable.DefaultView;
-            readInstructorDataGrid.ItemsSource = db.instructorTable.DefaultView;
-            readCourseOfferingDataGrid.ItemsSource = db.CourseOfferingTable.DefaultView;
-            readCourseEnrollmentDataGrid.ItemsSource = db.CourseEnrollmentTable.DefaultView;
+            RefreshReadGrids();
         }
 
         /// <summary>
-        /// makes all table editors invisable
+        /// Reloads data from the database and binds to the read grids.
+        /// </summary>
+        private void RefreshReadGrids()
+        {
+            db.RefreshProgramTable();
+            db.RefreshStudentTable();
+
+            readStudentDataGrid.ItemsSource = db.studentTable.DefaultView;
+            readProgramDataGrid.ItemsSource = db.programTable.DefaultView;
+        }
+
+        /// <summary>
+        /// makes all table editors invisible
         /// </summary>
         private void SetAllTablesInvisible()
         {
             createStudentGrid.Visibility = Visibility.Hidden;
             createProgramGrid.Visibility = Visibility.Hidden;
-            createCourseGrid.Visibility = Visibility.Hidden;
-            createProgramCourseGrid.Visibility = Visibility.Hidden;
-            createInstructorGrid.Visibility = Visibility.Hidden;
-            createCourseOfferingGrid.Visibility = Visibility.Hidden;
-            createCourseEnrollmentGrid.Visibility = Visibility.Hidden;
-
             readStudentDataGrid.Visibility = Visibility.Hidden;
             readProgramDataGrid.Visibility = Visibility.Hidden;
-            readCourseDataGrid.Visibility = Visibility.Hidden;
-            readProgramCourseDataGrid.Visibility = Visibility.Hidden;
-            readCourseEnrollmentDataGrid.Visibility = Visibility.Hidden;
         }
 
         private void btnFillTables_Click(object sender, RoutedEventArgs e)
         {
-            //disable to not allow overlapping entries
-            btnFillTables.IsEnabled = false;
+            try
+            {
+                // Example seed programs
+                ProgramModel program1 = new ProgramModel
+                {
+                    ProgramId = 1,
+                    ProgramName = "Math",
+                    CredentialType = "Diploma",
+                    DurationInTerms = 3,
+                    IsAvailable = true
+                };
 
-            //add programs (id, name, credential, duration, avalible)
-            db.programTable.Rows.Add(1, "SET", "adv Diploma", 6, true);
-            db.programTable.Rows.Add(2, "mEng", "degree", 8, false);
-            db.programTable.Rows.Add(3, "writing", "certificate", 2, true);
+                ProgramModel program2 = new ProgramModel
+                {
+                    ProgramId = 2,
+                    ProgramName = "C++ Programming",
+                    CredentialType = "Certificate",
+                    DurationInTerms = 2,
+                    IsAvailable = false
+                };
 
-            ProgramTable.ProgramIds.Add(1);
-            ProgramTable.ProgramIds.Add(2);
-            ProgramTable.ProgramIds.Add(3);
+                db.InsertProgram(program1);
+                db.InsertProgram(program2);
 
-            //add students (id, program id, fName, lName, email, dob, enrollment date)
-            db.studentTable.Rows.Add(1, 1, "Fred", "Smith", "Fred@mail.ca", new DateTime(2001, 5, 12), new DateTime(2025, 9, 1));
-            db.studentTable.Rows.Add(2, 3, "john", "apple", "applej@mail.ca", new DateTime(1991, 4, 22), new DateTime(2025, 9, 1));
+                // Example seed students
+                StudentModel student1 = new StudentModel
+                {
+                    StudentId = 1,
+                    ProgramId = 1,
+                    FirstName = "Fred",
+                    LastName = "Smith",
+                    EmailAddress = "fred@mail.ca",
+                    DateOfBirth = new DateTime(2001, 5, 12),
+                    DateEnrolled = new DateTime(2025, 9, 1)
+                };
 
-            StudentTable.StudentIds.Add(1);
-            StudentTable.StudentIds.Add(2);
+                StudentModel student2 = new StudentModel
+                {
+                    StudentId = 2,
+                    ProgramId = 2,
+                    FirstName = "John",
+                    LastName = "Apple",
+                    EmailAddress = "applej@mail.ca",
+                    DateOfBirth = new DateTime(1991, 4, 22),
+                    DateEnrolled = new DateTime(2025, 9, 1)
+                };
 
-            //add course (id, title, desc, hours)
-            db.courseTable.Rows.Add(1, "math", "calculashiunms", 50);
-            db.courseTable.Rows.Add(2, "c++", "mcdonalds prep", 86);
-            db.courseTable.Rows.Add(3, "zombies???", "goofy ahh class", 54);
+                db.InsertStudent(student1);
+                db.InsertStudent(student2);
 
-            CourseTable.CourseIds.Add(1);
-            CourseTable.CourseIds.Add(2);
-            CourseTable.CourseIds.Add(3);
+                RefreshReadGrids();
 
-            //add program course (program id, course id)
-            db.programCourseTable.Rows.Add(1, 2);
-            db.programCourseTable.Rows.Add(2, 1);
-            db.programCourseTable.Rows.Add(3, 3);
-
-            //add instructors (instructor id, fName, lName, email, hire date, office location)
-            db.instructorTable.Rows.Add(1, "billy", "bob", "billy@mail.com", new DateTime(2020, 6, 8), "Waterloo");
-            db.instructorTable.Rows.Add(2, "john", "johnson", "jj@mail.com", new DateTime(2018, 8, 1), "cambridge");
-
-            InstructorTable.InstructorIds.Add(1);
-            InstructorTable.InstructorIds.Add(2);
-
-            //add course offering (offering id, course id, instructor id, term start, term end, acedemic year, schedule info, selection code, delivery mode, max capacity, room location)
-            db.CourseOfferingTable.Rows.Add(1, 2, 2, 1, 1, 2025, "idk", 3, "in person", 30, "12b14");
-            db.CourseOfferingTable.Rows.Add(2, 3, 1, 2, 3, 2024, "idk", 1, "online", 50, "home");
-
-            CourseOfferingTable.OfferingIds.Add(1);
-            CourseOfferingTable.OfferingIds.Add(2);
-
-            //add courseEnrollment (student id, offering id, enrollmentStatus, finalGrade)
-            db.CourseEnrollmentTable.Rows.Add(1, 2, "enrolled", 0f);
-            db.CourseEnrollmentTable.Rows.Add(2, 1, "complete", 80.33f);
+                MessageBox.Show("Sample data inserted into CourseRegProDB.", "Seed Data",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error inserting sample data:\n" + ex.Message, "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
