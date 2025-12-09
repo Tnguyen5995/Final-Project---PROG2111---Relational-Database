@@ -32,12 +32,9 @@ namespace PROG2111_FinalPhase5
                 case "Program Table":
                     createProgramGrid.Visibility = Visibility.Visible; 
                     break;
-                case "Course Table":
-                    createCourseGrid.Visibility = Visibility.Visible;
-                    break;
             }
         }
-        private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
+        private void btnStudentSubmit_Click(object sender, RoutedEventArgs e)
         {
             bool error = false;
 
@@ -139,7 +136,7 @@ namespace PROG2111_FinalPhase5
             dateCreateStudentDateEnrolled.Text = string.Empty;
             return;
         }
-        private void btnCreateProgramSubmit_Click(object sender, RoutedEventArgs e)
+        private void btnProgramSubmit_Click(object sender, RoutedEventArgs e)
         {
             bool error = false;
 
@@ -211,70 +208,6 @@ namespace PROG2111_FinalPhase5
             txtCreateProgramCredential.Text = string.Empty;
             txtCreateProgramDuration.Text = string.Empty;
             return;
-        }
-
-        private void btnCreateCourseSubmit_Click(object sender, RoutedEventArgs e)
-        {
-            bool error = false;
-
-            //id
-            int courseId;
-            txtCreateCourseID.Background = Brushes.Transparent;
-            if (!int.TryParse(txtCreateCourseID.Text, out courseId))
-            {
-                txtCreateCourseID.Background = Brushes.Red;
-                error = true;
-            }
-            if (CourseTable.CourseIds.Contains(courseId))
-            {
-                txtCreateCourseID.Text = "Id already exists";
-                txtCreateCourseID.Background = Brushes.Red;
-                error = true;
-            }
-
-            //title
-            txtCreateCourseTitle.Background = Brushes.Transparent;
-            if(!(txtCreateCourseTitle.Text.Length > 0))
-            {
-                txtCreateCourseTitle.Background = Brushes.Red;
-                error = true;
-            }
-
-            //description
-            txtCreateCourseDescription.Background = Brushes.Transparent;
-            if(!(txtCreateCourseDescription.Text.Length > 0))
-            {
-                txtCreateCourseDescription.Background = Brushes.Red;
-                error = true;
-            }
-
-            //duration
-            int hours;
-            txtCreateCourseHours.Background = Brushes.Transparent;
-            if(!int.TryParse(txtCreateCourseHours.Text, out hours))
-            {
-                txtCreateCourseHours.Background = Brushes.Red;
-                error = true;
-            }
-
-            if(error)
-            {
-                return;
-            }
-
-            CourseTable.CourseIds.Add(courseId);
-            DataRow dr = db.courseTable.NewRow();
-
-            dr[0] = courseId;
-            dr[1] = txtCreateCourseTitle.Text;
-            dr[2] = txtCreateCourseDescription.Text;
-            dr[3] = hours;
-
-            db.courseTable.Rows.Add(dr);
-            txtCreateCourseID.Text = string.Empty;
-            txtCreateCourseTitle.Text = string.Empty;
-            txtCreateCourseDescription.Text = string.Empty;
-            txtCreateCourseHours.Text = string.Empty;
         }
     }
 }
