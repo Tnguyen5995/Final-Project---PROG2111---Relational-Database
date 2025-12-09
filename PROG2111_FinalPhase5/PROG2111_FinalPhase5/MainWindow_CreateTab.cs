@@ -47,6 +47,9 @@ namespace PROG2111_FinalPhase5
 				case "Course Enrollment Table":
                     createCourseEnrollmentGrid.Visibility = Visibility.Visible;
 					break;
+				case "Instructor Assignment Table":
+                    createInstructorAssignmentGrid.Visibility = Visibility.Visible;
+					break;
 			}
 		}
 		private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
@@ -441,20 +444,6 @@ namespace PROG2111_FinalPhase5
                 txtCourseOfferingCourseID.Background = Brushes.Red;
                 error = true;
             }
-            //instructor id
-            int instructorId;
-            txtCourseOfferingInstructorID.Background = Brushes.Transparent;
-            if (!int.TryParse(txtCourseOfferingID.Text, out instructorId))
-            {
-                txtCourseOfferingInstructorID.Background = Brushes.Red;
-                error = true;
-            }
-            if (!InstructorTable.InstructorIds.Contains(instructorId))
-            {
-                txtCourseOfferingInstructorID.Text = "Id doesnt exist";
-                txtCourseOfferingInstructorID.Background = Brushes.Red;
-                error = true;
-            }
 			//termStart
 			int termStart;
             txtCourseOfferingTermStart.Background = Brushes.Transparent;
@@ -525,21 +514,19 @@ namespace PROG2111_FinalPhase5
             DataRow dr = db.CourseOfferingTable.NewRow();
             dr[0] = offeringId;
             dr[1] = courseId;
-            dr[2] = instructorId;
-            dr[3] = termStart;
-            dr[4] = termEnd;
-            dr[5] = acedemicYear;
-            dr[6] = txtCourseOfferingScheduleInfo.Text;
-            dr[7] = selectionCode;
-            dr[8] = txtCourseOfferingDeliveryMode.Text;
-            dr[9] = maxCapacity;
-            dr[10] = txtCourseOfferingRoomLocation.Text;
+            dr[2] = termStart;
+            dr[3] = termEnd;
+            dr[4] = acedemicYear;
+            dr[5] = txtCourseOfferingScheduleInfo.Text;
+            dr[6] = selectionCode;
+            dr[7] = txtCourseOfferingDeliveryMode.Text;
+            dr[8] = maxCapacity;
+            dr[9] = txtCourseOfferingRoomLocation.Text;
 
 			db.CourseOfferingTable.Rows.Add(dr);
 
 			txtCourseOfferingID.Text = string.Empty;
 			txtCourseOfferingCourseID.Text = string.Empty;
-			txtCourseOfferingInstructorID.Text = string.Empty;
 			txtCourseOfferingTermStart.Text = string.Empty;
 			txtCourseOfferingTermEnd.Text = string.Empty;
 			txtCourseOfferingAcedemicYear.Text = string.Empty;
@@ -627,6 +614,53 @@ namespace PROG2111_FinalPhase5
 			txtCreateCourseEnrollmentFinalGrade.Text = string.Empty;
 
             return;
+        }
+        private void btnCreateInstructorAssignmentSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            bool error = false;
+
+            //instructor id
+            int instructorId;
+            txtCreateInstructorAssignmentInstructorID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateInstructorAssignmentInstructorID.Text, out instructorId))
+            {
+                txtCreateInstructorAssignmentInstructorID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!InstructorTable.InstructorIds.Contains(instructorId))
+            {
+                txtCreateInstructorAssignmentInstructorID.Text = "Id doesnt exist";
+                txtCreateInstructorAssignmentInstructorID.Background = Brushes.Red;
+                error = true;
+            }
+            //offering id
+            int offeringId;
+            txtCreateInstructorAssignmentOfferingID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateInstructorAssignmentOfferingID.Text, out offeringId))
+            {
+                txtCreateInstructorAssignmentOfferingID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!CourseOfferingTable.OfferingIds.Contains(offeringId))
+            {
+                txtCreateInstructorAssignmentOfferingID.Text = "Id doesnt exist";
+                txtCreateInstructorAssignmentOfferingID.Background = Brushes.Red;
+                error = true;
+            }
+
+            if (error)
+            {
+                return;
+            }
+
+            DataRow dr = db.InstructorAssignmentTable.NewRow();
+            dr[0] = instructorId;
+            dr[1] = offeringId;
+
+            db.InstructorAssignmentTable.Rows.Add(dr);
+
+            txtCreateInstructorAssignmentInstructorID.Text = string.Empty;
+            txtCreateInstructorAssignmentOfferingID.Text = string.Empty;
         }
     }
 }

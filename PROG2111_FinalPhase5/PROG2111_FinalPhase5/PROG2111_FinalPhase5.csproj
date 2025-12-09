@@ -108,6 +108,7 @@
     <Compile Include="CourseOfferingTable.cs" />
     <Compile Include="CourseTable.cs" />
     <Compile Include="DbConnectionFactory.cs" />
+    <Compile Include="InstructorAssignmentTable.cs" />
     <Compile Include="InstructorTable.cs" />
     <Compile Include="MainWindow_ReadTab.cs" />
     <Compile Include="ProgramCourseTable.cs" />
