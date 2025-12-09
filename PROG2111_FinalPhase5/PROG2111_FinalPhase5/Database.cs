@@ -6,16 +6,22 @@ namespace PROG2111_FinalPhase5
      * FILE : Database.cs
      * PROJECT : PROG2111_FinalPhase5
      * PROGRAMMER : George Shapka, Tuan Thanh Nguyen
-     * FIRST VERSION : 12/08/2025
-     * 
+     * FIRST VERSION : 12/09/2025
+     *
      * PURPOSE :
-     *   Wrapper around repository classes used by the WPF UI to obtain
-     *   DataTables for Student and Program.
+     *   Provides a simple facade over ProgramRepository and StudentRepository.
+     *   The WPF UI uses this class to load DataTables for display and to perform
+     *   CRUD operations against the MySQL CourseRegProDB database.
      */
     internal class Database
     {
-        public DataTable studentTable { get; private set; }
-        public DataTable programTable { get; private set; }
+        // Main tables used by the UI
+        public DataTable StudentTable { get; private set; }
+        public DataTable ProgramTable { get; private set; }
+
+        // Compatibility properties – your existing UI uses lower-case names
+        public DataTable studentTable => StudentTable;
+        public DataTable programTable => ProgramTable;
 
         private readonly ProgramRepository _programRepository;
         private readonly StudentRepository _studentRepository;
@@ -25,25 +31,60 @@ namespace PROG2111_FinalPhase5
             _programRepository = new ProgramRepository();
             _studentRepository = new StudentRepository();
 
-            StudentProgramIDRelation = new DataRelation("FK_Student_ProgramId", programTable.Columns["programId"], studentTable.Columns["studentId"]);
-            ProgramCourseProgramIDRelation = new DataRelation("FK_ProgramCourse_ProgramId", programTable.Columns["programId"], programCourseTable.Columns["programId"]);
-            ProgramCourseCourseIDRelation = new DataRelation("FK_ProgramCourse_CourseId", courseTable.Columns["courseId"], programCourseTable.Columns["courseId"]);
+            RefreshProgramTable();
+            RefreshStudentTable();
         }
-        public DataRelation StudentProgramIDRelation;
-        public DataRelation ProgramCourseProgramIDRelation;
-        public DataRelation ProgramCourseCourseIDRelation;
 
-        public DataSet ds = new DataSet("DataSet");
+        // --- Load / Refresh ---
 
-        public DataTable studentTable = new StudentTable().StudentDataTable;
-        public DataTable programTable = new ProgramTable().ProgramDataTable;
-        public DataTable courseTable = new CourseTable().CourseDataTable;
-        public DataTable programCourseTable = new ProgramCourseTable().ProgramCourseDataTable;
-    }//end of Database
+        public void RefreshProgramTable()
+        {
+            ProgramTable = _programRepository.GetAllProgramsAsDataTable();
+        }
 
         public void RefreshStudentTable()
         {
-            studentTable = _studentRepository.GetAllStudentsAsDataTable();
+            StudentTable = _studentRepository.GetAllStudentsAsDataTable();
+        }
+
+        // --- Program CRUD ----
+
+        public void InsertProgram(ProgramModel program)
+        {
+            _programRepository.InsertProgram(program);
+            RefreshProgramTable();
+        }
+
+        public void UpdateProgram(ProgramModel program)
+        {
+            _programRepository.UpdateProgram(program);
+            RefreshProgramTable();
+        }
+
+        public void DeleteProgram(int programId)
+        {
+            _programRepository.DeleteProgram(programId);
+            RefreshProgramTable();
+        }
+
+        // --- Student CRUD ---
+
+        public void InsertStudent(StudentModel student)
+        {
+            _studentRepository.InsertStudent(student);
+            RefreshStudentTable();
+        }
+
+        public void UpdateStudent(StudentModel student)
+        {
+            _studentRepository.UpdateStudent(student);
+            RefreshStudentTable();
+        }
+
+        public void DeleteStudent(int studentId)
+        {
+            _studentRepository.DeleteStudent(studentId);
+            RefreshStudentTable();
         }
     }
 }
