@@ -106,6 +106,7 @@
     </ApplicationDefinition>
     <Compile Include="CourseTable.cs" />
     <Compile Include="DbConnectionFactory.cs" />
+    <Compile Include="InstructorTable.cs" />
     <Compile Include="MainWindow_ReadTab.cs" />
     <Compile Include="ProgramCourseTable.cs" />
     <Compile Include="ProgramModel.cs" />

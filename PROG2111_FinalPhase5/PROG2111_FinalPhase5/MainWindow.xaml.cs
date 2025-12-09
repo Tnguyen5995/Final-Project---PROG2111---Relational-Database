@@ -29,6 +29,7 @@ namespace PROG2111_FinalPhase5
             readProgramDataGrid.ItemsSource = db.programTable.DefaultView;
             readCourseDataGrid.ItemsSource = db.courseTable.DefaultView;
             readProgramCourseDataGrid.ItemsSource = db.programCourseTable.DefaultView;
+            readInstructorDataGrid.ItemsSource = db.instructorTable.DefaultView;
         }
 
         /// <summary>
@@ -40,6 +41,7 @@ namespace PROG2111_FinalPhase5
             createProgramGrid.Visibility = Visibility.Hidden;
             createCourseGrid.Visibility = Visibility.Hidden;
             createProgramCourseGrid.Visibility = Visibility.Hidden;
+            createInstructorGrid.Visibility = Visibility.Hidden;
 
             readStudentDataGrid.Visibility = Visibility.Hidden;
             readProgramDataGrid.Visibility = Visibility.Hidden;
@@ -81,6 +83,13 @@ namespace PROG2111_FinalPhase5
             db.programCourseTable.Rows.Add(1, 2);
             db.programCourseTable.Rows.Add(2, 1);
             db.programCourseTable.Rows.Add(3, 3);
+
+            //add instructors (instructor id, fName, lName, email, hire date, office location)
+            db.instructorTable.Rows.Add(1, "billy", "bob", "billy@mail.com", new DateTime(2020, 6, 8), "Waterloo");
+            db.instructorTable.Rows.Add(2, "john", "johnson", "jj@mail.com", new DateTime(2018, 8, 1), "cambridge");
+
+            InstructorTable.InstructorIds.Add(1);
+            InstructorTable.InstructorIds.Add(2);
         }
     }
 }
