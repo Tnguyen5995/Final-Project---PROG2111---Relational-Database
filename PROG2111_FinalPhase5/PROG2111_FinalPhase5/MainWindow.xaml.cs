@@ -29,6 +29,9 @@ namespace PROG2111_FinalPhase5
             readProgramDataGrid.ItemsSource = db.programTable.DefaultView;
             readCourseDataGrid.ItemsSource = db.courseTable.DefaultView;
             readProgramCourseDataGrid.ItemsSource = db.programCourseTable.DefaultView;
+            readInstructorDataGrid.ItemsSource = db.instructorTable.DefaultView;
+            readCourseOfferingDataGrid.ItemsSource = db.CourseOfferingTable.DefaultView;
+            readCourseEnrollmentDataGrid.ItemsSource = db.CourseEnrollmentTable.DefaultView;
         }
 
         /// <summary>
@@ -40,11 +43,15 @@ namespace PROG2111_FinalPhase5
             createProgramGrid.Visibility = Visibility.Hidden;
             createCourseGrid.Visibility = Visibility.Hidden;
             createProgramCourseGrid.Visibility = Visibility.Hidden;
+            createInstructorGrid.Visibility = Visibility.Hidden;
+            createCourseOfferingGrid.Visibility = Visibility.Hidden;
+            createCourseEnrollmentGrid.Visibility = Visibility.Hidden;
 
             readStudentDataGrid.Visibility = Visibility.Hidden;
             readProgramDataGrid.Visibility = Visibility.Hidden;
             readCourseDataGrid.Visibility = Visibility.Hidden;
             readProgramCourseDataGrid.Visibility = Visibility.Hidden;
+            readCourseEnrollmentDataGrid.Visibility = Visibility.Hidden;
         }
 
         private void btnFillTables_Click(object sender, RoutedEventArgs e)
@@ -81,6 +88,24 @@ namespace PROG2111_FinalPhase5
             db.programCourseTable.Rows.Add(1, 2);
             db.programCourseTable.Rows.Add(2, 1);
             db.programCourseTable.Rows.Add(3, 3);
+
+            //add instructors (instructor id, fName, lName, email, hire date, office location)
+            db.instructorTable.Rows.Add(1, "billy", "bob", "billy@mail.com", new DateTime(2020, 6, 8), "Waterloo");
+            db.instructorTable.Rows.Add(2, "john", "johnson", "jj@mail.com", new DateTime(2018, 8, 1), "cambridge");
+
+            InstructorTable.InstructorIds.Add(1);
+            InstructorTable.InstructorIds.Add(2);
+
+            //add course offering (offering id, course id, instructor id, term start, term end, acedemic year, schedule info, selection code, delivery mode, max capacity, room location)
+            db.CourseOfferingTable.Rows.Add(1, 2, 2, 1, 1, 2025, "idk", 3, "in person", 30, "12b14");
+            db.CourseOfferingTable.Rows.Add(2, 3, 1, 2, 3, 2024, "idk", 1, "online", 50, "home");
+
+            CourseOfferingTable.OfferingIds.Add(1);
+            CourseOfferingTable.OfferingIds.Add(2);
+
+            //add courseEnrollment (student id, offering id, enrollmentStatus, finalGrade)
+            db.CourseEnrollmentTable.Rows.Add(1, 2, "enrolled", 0f);
+            db.CourseEnrollmentTable.Rows.Add(2, 1, "complete", 80.33f);
         }
     }
 }

@@ -25,14 +25,21 @@ namespace PROG2111_FinalPhase5
             _programRepository = new ProgramRepository();
             _studentRepository = new StudentRepository();
 
-            RefreshProgramTable();
-            RefreshStudentTable();
+            StudentProgramIDRelation = new DataRelation("FK_Student_ProgramId", programTable.Columns["programId"], studentTable.Columns["studentId"]);
+            ProgramCourseProgramIDRelation = new DataRelation("FK_ProgramCourse_ProgramId", programTable.Columns["programId"], programCourseTable.Columns["programId"]);
+            ProgramCourseCourseIDRelation = new DataRelation("FK_ProgramCourse_CourseId", courseTable.Columns["courseId"], programCourseTable.Columns["courseId"]);
         }
+        public DataRelation StudentProgramIDRelation;
+        public DataRelation ProgramCourseProgramIDRelation;
+        public DataRelation ProgramCourseCourseIDRelation;
 
-        public void RefreshProgramTable()
-        {
-            programTable = _programRepository.GetAllProgramsAsDataTable();
-        }
+        public DataSet ds = new DataSet("DataSet");
+
+        public DataTable studentTable = new StudentTable().StudentDataTable;
+        public DataTable programTable = new ProgramTable().ProgramDataTable;
+        public DataTable courseTable = new CourseTable().CourseDataTable;
+        public DataTable programCourseTable = new ProgramCourseTable().ProgramCourseDataTable;
+    }//end of Database
 
         public void RefreshStudentTable()
         {
