@@ -323,10 +323,19 @@ namespace PROG2111_FinalPhase5
 				txtCreateProgramCourseCourseID.Background = Brushes.Red;
 				error = true;
 			}
+			int[] key = new int[] { programId, courseId };
+
+            if (ProgramCourseTable.ProgramCourseKeys.Contains(key))
+            {
+                txtCreateProgramCourseProgramID.Background = Brushes.Red;
+                txtCreateProgramCourseCourseID.Background = Brushes.Red;
+                txtCreateProgramCourseCourseID.Text = "Program Course Already Exists";
+                error = true;
+            }
 
 			if(error)
 			{
-				return;
+                return;
 			}
 
 			DataRow dr = db.programCourseTable.NewRow();
@@ -334,6 +343,8 @@ namespace PROG2111_FinalPhase5
 			dr[1] = courseId;
 
 			db.programCourseTable.Rows.Add(dr);
+
+			ProgramCourseTable.ProgramCourseKeys.Add(new int[] { programId, courseId });
 
 			txtCreateProgramCourseProgramID.Text = string.Empty;
 			txtCreateProgramCourseCourseID.Text = string.Empty;

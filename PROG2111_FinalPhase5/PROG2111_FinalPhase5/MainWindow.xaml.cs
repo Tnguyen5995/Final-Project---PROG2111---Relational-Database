@@ -94,6 +94,10 @@ namespace PROG2111_FinalPhase5
             db.programCourseTable.Rows.Add(2, 1);
             db.programCourseTable.Rows.Add(3, 3);
 
+            ProgramCourseTable.ProgramCourseKeys.Add(new int[] { 1, 2 });
+            ProgramCourseTable.ProgramCourseKeys.Add(new int[] { 2, 1 });
+            ProgramCourseTable.ProgramCourseKeys.Add(new int[] { 3, 3 });
+
             //add instructors (instructor id, fName, lName, email, hire date, office location)
             db.instructorTable.Rows.Add(1, "billy", "bob", "billy@mail.com", new DateTime(2020, 6, 8), "Waterloo");
             db.instructorTable.Rows.Add(2, "john", "johnson", "jj@mail.com", new DateTime(2018, 8, 1), "cambridge");
