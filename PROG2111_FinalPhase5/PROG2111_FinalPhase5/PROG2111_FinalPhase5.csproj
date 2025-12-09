@@ -106,7 +106,9 @@
     </ApplicationDefinition>
     <Compile Include="DbConnectionFactory.cs" />
     <Compile Include="MainWindow_ReadTab.cs" />
+    <Compile Include="ProgramModel.cs" />
     <Compile Include="ProgramTable.cs" />
+    <Compile Include="StudentModel.cs" />
     <Compile Include="StudentTable.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
