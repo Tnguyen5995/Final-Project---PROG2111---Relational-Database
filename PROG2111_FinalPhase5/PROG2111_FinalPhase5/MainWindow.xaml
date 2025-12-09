@@ -5,7 +5,7 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:PROG2111_FinalPhase5"
 		mc:Ignorable="d"
-		Title="MainWindow" Height="500" Width="800">
+		Title="MainWindow" Height="600" Width="900">
 	<Grid>
 		<TabControl>
 			<TabItem Header="Create">
@@ -218,6 +218,83 @@
 						<!-- Submit Button -->
 						<Button Grid.Row="6" Margin="300,5" Name="btnInstructorSubmit" Content="Submit" Click="btnCreateInstructorSubmit_Click"/>
 					</Grid>
+					
+					<!-- course offering grid -->
+					<Grid Grid.Row="1" Name="createCourseOfferingGrid" Visibility="Hidden">
+						<Grid.RowDefinitions>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+
+						<!-- offering -->
+                        <StackPanel Grid.Row="0">
+                            <Label Content="offeringID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingID"/>
+                        </StackPanel>
+						<!-- courseID -->
+                        <StackPanel Grid.Row="1">
+                            <Label Content="courseID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingCourseID"/>
+                        </StackPanel>
+						<!-- InstructorID -->
+                        <StackPanel Grid.Row="2">
+                            <Label Content="instructorID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingInstructorID"/>
+                        </StackPanel>
+						<!-- termStart -->
+                        <StackPanel Grid.Row="3">
+                            <Label Content="termStart" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingTermStart"/>
+                        </StackPanel>
+						<!-- termEnd -->
+                        <StackPanel Grid.Row="4">
+                            <Label Content="termEnd" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingTermEnd"/>
+                        </StackPanel>
+						<!-- acedemicYear -->
+                        <StackPanel Grid.Row="5">
+                            <Label Content="acedemicYear" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingAcedemicYear"/>
+                        </StackPanel>
+						<!-- scheduleInfo -->
+                        <StackPanel Grid.Row="6">
+                            <Label Content="scheduleInfo" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingScheduleInfo"/>
+                        </StackPanel>
+						<!-- selectionCode -->
+                        <StackPanel Grid.Row="7">
+                            <Label Content="selectionCode" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingSelectionCode"/>
+                        </StackPanel>
+						<!-- deviveryMode -->
+                        <StackPanel Grid.Row="8">
+                            <Label Content="deliveryMode" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingDeliveryMode"/>
+                        </StackPanel>
+						<!-- maxCapacity -->
+                        <StackPanel Grid.Row="9">
+                            <Label Content="maxCapacity" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingMaxCapacity"/>
+                        </StackPanel>
+						<!-- roomLocation -->
+                        <StackPanel Grid.Row="10">
+                            <Label Content="roomLocation" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCourseOfferingRoomLocation"/>
+                        </StackPanel>
+
+                        <!-- Submit Button -->
+						<Button Grid.Row="11" Margin="300,5" Name="btnCourseOfferingSubmit" Content="Submit" Click="btnCourseOfferingSubmit_Click"/>
+					</Grid>
 
 				</Grid>
 			</TabItem>
@@ -246,6 +323,7 @@
 					<DataGrid Name="readCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 					<DataGrid Name="readProgramCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 					<DataGrid Name="readInstructorDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+					<DataGrid Name="readCourseOfferingDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 
 
 

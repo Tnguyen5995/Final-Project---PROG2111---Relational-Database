@@ -41,6 +41,9 @@ namespace PROG2111_FinalPhase5
 				case "Instructor Table":
 					createInstructorGrid.Visibility = Visibility.Visible;
 					break;
+				case "Course Offering Table":
+                    createCourseOfferingGrid.Visibility = Visibility.Visible;
+					break;
 			}
 		}
 		private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
@@ -295,7 +298,7 @@ namespace PROG2111_FinalPhase5
 			}
 			if (!ProgramTable.ProgramIds.Contains(programId))
 			{
-				txtCreateProgramCourseProgramID.Text = "Id doesnt exists";
+				txtCreateProgramCourseProgramID.Text = "Id doesnt exist";
 				txtCreateProgramCourseProgramID.Background = Brushes.Red;
 				error = true;
 			}
@@ -309,7 +312,7 @@ namespace PROG2111_FinalPhase5
 			}
 			if (!CourseTable.CourseIds.Contains(courseId))
 			{
-				txtCreateProgramCourseCourseID.Text = "Id doesnt exists";
+				txtCreateProgramCourseCourseID.Text = "Id doesnt exist";
 				txtCreateProgramCourseCourseID.Background = Brushes.Red;
 				error = true;
 			}
@@ -339,9 +342,9 @@ namespace PROG2111_FinalPhase5
 				txtCreateInstructorID.Background = Brushes.Red;
 				error = true;
 			}
-			if (!ProgramTable.ProgramIds.Contains(instructorId))
+			if (ProgramTable.ProgramIds.Contains(instructorId))
 			{
-				txtCreateInstructorID.Text = "Id doesnt exists";
+				txtCreateInstructorID.Text = "Id already exists";
 				txtCreateInstructorID.Background = Brushes.Red;
 				error = true;
 			}
@@ -396,6 +399,145 @@ namespace PROG2111_FinalPhase5
 			txtCreateInstructorEmail.Text = string.Empty;
 			dateCreateInstructorHireDate.Text = string.Empty;
 			txtCreateInstructorOfficeLocation.Text = string.Empty;
-		}
-	}
+        }
+
+        private void btnCourseOfferingSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            bool error = false;
+
+            //offering id
+            int offeringId;
+            txtCourseOfferingID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCourseOfferingID.Text, out offeringId))
+            {
+                txtCourseOfferingID.Background = Brushes.Red;
+                error = true;
+            }
+            if (CourseOfferingTable.OfferingIds.Contains(offeringId))
+            {
+                txtCourseOfferingID.Text = "Id already exists";
+                txtCourseOfferingID.Background = Brushes.Red;
+                error = true;
+            }
+            //course id
+            int courseId;
+            txtCourseOfferingCourseID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCourseOfferingCourseID.Text, out courseId))
+            {
+                txtCourseOfferingCourseID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!CourseTable.CourseIds.Contains(courseId))
+            {
+                txtCourseOfferingCourseID.Text = "Id doesnt exist";
+                txtCourseOfferingCourseID.Background = Brushes.Red;
+                error = true;
+            }
+            //instructor id
+            int instructorId;
+            txtCourseOfferingInstructorID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCourseOfferingID.Text, out instructorId))
+            {
+                txtCourseOfferingInstructorID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!InstructorTable.InstructorIds.Contains(instructorId))
+            {
+                txtCourseOfferingInstructorID.Text = "Id doesnt exist";
+                txtCourseOfferingInstructorID.Background = Brushes.Red;
+                error = true;
+            }
+			//termStart
+			int termStart;
+            txtCourseOfferingTermStart.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCourseOfferingTermStart.Text, out termStart))
+			{
+				txtCourseOfferingTermStart.Background= Brushes.Red;
+				error = true;
+			}
+			//termEnd
+			int termEnd;
+			txtCourseOfferingTermEnd.Background = Brushes.Transparent;
+			if(!int.TryParse(txtCourseOfferingTermEnd.Text, out termEnd))
+			{
+				txtCourseOfferingTermEnd.Background= Brushes.Red;
+				error = true;
+			}
+			//acedemicYear
+			int acedemicYear;
+			txtCourseOfferingAcedemicYear.Background = Brushes.Transparent;
+			if(!int.TryParse(txtCourseOfferingAcedemicYear.Text, out acedemicYear))
+			{
+				txtCourseOfferingAcedemicYear.Background= Brushes.Red;
+				error = true;
+			}
+            //scheduleInfo
+            txtCourseOfferingScheduleInfo.Background = Brushes.Transparent;
+            if (!(txtCourseOfferingScheduleInfo.Text.Length > 0))
+            {
+                txtCourseOfferingScheduleInfo.Background = Brushes.Red;
+                error = true;
+            }
+			//selectionCode
+			int selectionCode;
+            txtCourseOfferingSelectionCode.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCourseOfferingSelectionCode.Text, out selectionCode))
+			{
+				txtCourseOfferingSelectionCode.Background = Brushes.Red;
+				error = true;
+			}
+            //deliveryMode
+            txtCourseOfferingDeliveryMode.Background = Brushes.Transparent;
+            if (!(txtCourseOfferingDeliveryMode.Text.Length > 0))
+            {
+                txtCourseOfferingDeliveryMode.Background = Brushes.Red;
+                error = true;
+            }
+            //maxCapacity
+            int maxCapacity;
+            txtCourseOfferingMaxCapacity.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCourseOfferingMaxCapacity.Text, out maxCapacity))
+            {
+                txtCourseOfferingMaxCapacity.Background = Brushes.Red;
+                error = true;
+            }
+            //roomLocation
+            txtCourseOfferingRoomLocation.Background = Brushes.Transparent;
+            if (!(txtCourseOfferingRoomLocation.Text.Length > 0))
+            {
+                txtCourseOfferingRoomLocation.Background = Brushes.Red;
+                error = true;
+            }
+
+            if (error)
+            {
+                return;
+            }
+
+            DataRow dr = db.CourseOfferingTable.NewRow();
+            dr[0] = offeringId;
+            dr[1] = courseId;
+            dr[2] = instructorId;
+            dr[3] = termStart;
+            dr[4] = termEnd;
+            dr[5] = acedemicYear;
+            dr[6] = txtCourseOfferingScheduleInfo.Text;
+            dr[7] = selectionCode;
+            dr[8] = txtCourseOfferingDeliveryMode.Text;
+            dr[9] = maxCapacity;
+            dr[10] = txtCourseOfferingRoomLocation.Text;
+
+			txtCourseOfferingID.Text = string.Empty;
+			txtCourseOfferingCourseID.Text = string.Empty;
+			txtCourseOfferingInstructorID.Text = string.Empty;
+			txtCourseOfferingTermStart.Text = string.Empty;
+			txtCourseOfferingTermEnd.Text = string.Empty;
+			txtCourseOfferingAcedemicYear.Text = string.Empty;
+			txtCourseOfferingScheduleInfo.Text = string.Empty;
+			txtCourseOfferingSelectionCode.Text = string.Empty;
+			txtCourseOfferingDeliveryMode.Text = string.Empty;
+			txtCourseOfferingMaxCapacity.Text = string.Empty;
+			txtCourseOfferingRoomLocation.Text = string.Empty;
+        }
+    }
 }

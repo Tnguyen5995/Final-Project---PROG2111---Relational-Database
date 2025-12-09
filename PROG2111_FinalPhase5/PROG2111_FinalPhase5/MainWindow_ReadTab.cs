@@ -39,6 +39,9 @@ namespace PROG2111_FinalPhase5
                 case "Instructor Table":
                     readInstructorDataGrid.Visibility = Visibility.Visible;
                     break;
+                case "Course Offering Table":
+                    readCourseOfferingDataGrid.Visibility = Visibility.Visible;
+                    break;
             }
         }
 

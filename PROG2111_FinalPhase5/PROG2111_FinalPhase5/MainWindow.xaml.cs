@@ -30,6 +30,7 @@ namespace PROG2111_FinalPhase5
             readCourseDataGrid.ItemsSource = db.courseTable.DefaultView;
             readProgramCourseDataGrid.ItemsSource = db.programCourseTable.DefaultView;
             readInstructorDataGrid.ItemsSource = db.instructorTable.DefaultView;
+            readCourseOfferingDataGrid.ItemsSource = db.CourseOfferingTable.DefaultView;
         }
 
         /// <summary>
@@ -90,6 +91,13 @@ namespace PROG2111_FinalPhase5
 
             InstructorTable.InstructorIds.Add(1);
             InstructorTable.InstructorIds.Add(2);
+
+            //add course offering (offering id, course id, instructor id, term start, term end, acedemic year, schedule info, selection code, delivery mode, max capacity, room location)
+            db.CourseOfferingTable.Rows.Add(1, 2, 2, 1, 1, 2025, "idk", 3, "in person", 30, "12b14");
+            db.CourseOfferingTable.Rows.Add(2, 3, 1, 2, 3, 2024, "idk", 1, "online", 50, "home");
+
+            CourseOfferingTable.OfferingIds.Add(1);
+            CourseOfferingTable.OfferingIds.Add(2);
         }
     }
 }
