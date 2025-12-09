@@ -73,7 +73,7 @@
                             <Label Content="studentDateEnrolled(dd/mm/yyyy)" HorizontalAlignment="Center"/>
                             <DatePicker Width="300" Name="dateCreateStudentDateEnrolled"/>
                         </StackPanel>
-                        <Button Grid.Row="7" Margin="300, 5" Name="btnStudentSubmit" Content="Submit" Click="btnStudentSubmit_Click"/>
+                        <Button Grid.Row="7" Margin="300, 5" Name="btnStudentSubmit" Content="Submit" Click="btnCreateStudentSubmit_Click"/>
                     </Grid>
 
 
@@ -112,7 +112,39 @@
                             <Label Content="programAvalibility" HorizontalAlignment="Center"/>
                             <CheckBox Name="chkCreateProgramAvaliblility" HorizontalAlignment="Center" IsChecked="True"/>
                         </StackPanel>
-                        <Button Grid.Row="5" Margin="300, 5" Name="btnProgramSubmit" Content="Submit" Click="btnProgramSubmit_Click"/>
+                        <Button Grid.Row="5" Margin="300, 5" Name="btnCreateProgramSubmit" Content="Submit" Click="btnCreateProgramSubmit_Click"/>
+                    </Grid>
+
+                    <!--Course Grid-->
+                    <Grid Grid.Row="1" Name="createCourseGrid" Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <!--id-->
+                        <StackPanel Grid.Row="0">
+                            <Label Content="courseID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateCourseID"/>
+                        </StackPanel>
+                        <!--program name-->
+                        <StackPanel Grid.Row="1">
+                            <Label Content="courseName" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateCourseTitle"/>
+                        </StackPanel>
+                        <!--credential-->
+                        <StackPanel Grid.Row="2">
+                            <Label Content="courseDescription" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateCourseDescription"/>
+                        </StackPanel>
+                        <!--Duration-->
+                        <StackPanel Grid.Row="3">
+                            <Label Content="courseHours" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateCourseHours"/>
+                        </StackPanel>
+                        <Button Grid.Row="4" Margin="300, 5" Name="btnCreateCourseSubmit" Content="Submit" Click="btnCreateCourseSubmit_Click"/>
                     </Grid>
                 </Grid>
             </TabItem>
@@ -138,6 +170,8 @@
                     <!--grids-->
                     <DataGrid Name="readStudentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
                     <DataGrid Name="readProgramDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+                    <DataGrid Name="readCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+
 
 
                 </Grid>

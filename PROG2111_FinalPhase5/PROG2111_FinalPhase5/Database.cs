@@ -20,11 +20,13 @@ namespace PROG2111_FinalPhase5
             ds.Tables.Add(studentTable);
             ds.Tables.Add(programTable);
             StudentProgramRelation = new DataRelation("FK_Program_Student", programTable.Columns["programId"], studentTable.Columns["studentId"]);
+            ds.Tables.Add(courseTable);
         }
         public DataRelation StudentProgramRelation;
         public DataSet ds = new DataSet("DataSet");
         public DataTable studentTable = new StudentTable().StudentDataTable;
         public DataTable programTable = new ProgramTable().ProgramDataTable;
+        public DataTable courseTable = new CourseTable().CourseDataTable;
     }//end of Database
 
 }//end of PROG2111_FinalPhase5
