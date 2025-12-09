@@ -109,8 +109,10 @@
     <Compile Include="MainWindow_ReadTab.cs" />
     <Compile Include="ProgramCourseTable.cs" />
     <Compile Include="ProgramModel.cs" />
+    <Compile Include="ProgramRepository.cs" />
     <Compile Include="ProgramTable.cs" />
     <Compile Include="StudentModel.cs" />
+    <Compile Include="StudentRepository.cs" />
     <Compile Include="StudentTable.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

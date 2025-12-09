@@ -1,12 +1,180 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+using MySql.Data.MySqlClient;
 
 namespace PROG2111_FinalPhase5
 {
+    /*
+     * FILE : ProgramRepository.cs
+     * PROJECT : PROG2111_FinalPhase5
+     * PROGRAMMER : Tuan Thanh Nguyen
+     * FIRST VERSION : 12/08/2025
+     */
     internal class ProgramRepository
     {
+        public DataTable GetAllProgramsAsDataTable()
+        {
+            DataTable table = new DataTable();
+
+            using (MySqlConnection connection = DbConnectionFactory.CreateConnection())
+            {
+                connection.Open();
+
+                const string query =
+                    @"SELECT programID, programName, credentialType, durationInTerms, isAvailable
+                      FROM Program
+                      ORDER BY programName;";
+
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection))
+                {
+                    adapter.Fill(table);
+                }
+            }
+
+            return table;
+        }
+
+        public List<ProgramModel> GetAllPrograms()
+        {
+            List<ProgramModel> programs = new List<ProgramModel>();
+
+            using (MySqlConnection connection = DbConnectionFactory.CreateConnection())
+            {
+                connection.Open();
+
+                const string query =
+                    @"SELECT programID, programName, credentialType, durationInTerms, isAvailable
+                      FROM Program
+                      ORDER BY programName;";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ProgramModel model = new ProgramModel
+                        {
+                            ProgramId = reader.GetInt32("programID"),
+                            ProgramName = reader.GetString("programName"),
+                            CredentialType = reader.GetString("credentialType"),
+                            DurationInTerms = reader.GetByte("durationInTerms"),
+                            IsAvailable = reader.GetBoolean("isAvailable")
+                        };
+
+                        programs.Add(model);
+                    }
+                }
+            }
+
+            return programs;
+        }
+
+        public ProgramModel GetProgramById(int programId)
+        {
+            using (MySqlConnection connection = DbConnectionFactory.CreateConnection())
+            {
+                connection.Open();
+
+                const string query =
+                    @"SELECT programID, programName, credentialType, durationInTerms, isAvailable
+                      FROM Program
+                      WHERE programID = @programId;";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@programId", programId);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new ProgramModel
+                            {
+                                ProgramId = reader.GetInt32("programID"),
+                                ProgramName = reader.GetString("programName"),
+                                CredentialType = reader.GetString("credentialType"),
+                                DurationInTerms = reader.GetByte("durationInTerms"),
+                                IsAvailable = reader.GetBoolean("isAvailable")
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public void InsertProgram(ProgramModel program)
+        {
+            using (MySqlConnection connection = DbConnectionFactory.CreateConnection())
+            {
+                connection.Open();
+
+                const string query =
+                    @"INSERT INTO Program
+                        (programID, programName, credentialType, durationInTerms, isAvailable)
+                      VALUES
+                        (@programID, @programName, @credentialType, @durationInTerms, @isAvailable);";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    // Note: programID column is AUTO_INCREMENT, but we are explicitly
+                    // inserting the value from the UI to match your current design.
+                    cmd.Parameters.AddWithValue("@programID", program.ProgramId);
+                    cmd.Parameters.AddWithValue("@programName", program.ProgramName);
+                    cmd.Parameters.AddWithValue("@credentialType", program.CredentialType);
+                    cmd.Parameters.AddWithValue("@durationInTerms", program.DurationInTerms);
+                    cmd.Parameters.AddWithValue("@isAvailable", program.IsAvailable);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdateProgram(ProgramModel program)
+        {
+            using (MySqlConnection connection = DbConnectionFactory.CreateConnection())
+            {
+                connection.Open();
+
+                const string query =
+                    @"UPDATE Program
+                      SET programName = @programName,
+                          credentialType = @credentialType,
+                          durationInTerms = @durationInTerms,
+                          isAvailable = @isAvailable
+                      WHERE programID = @programID;";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@programID", program.ProgramId);
+                    cmd.Parameters.AddWithValue("@programName", program.ProgramName);
+                    cmd.Parameters.AddWithValue("@credentialType", program.CredentialType);
+                    cmd.Parameters.AddWithValue("@durationInTerms", program.DurationInTerms);
+                    cmd.Parameters.AddWithValue("@isAvailable", program.IsAvailable);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteProgram(int programId)
+        {
+            using (MySqlConnection connection = DbConnectionFactory.CreateConnection())
+            {
+                connection.Open();
+
+                const string query =
+                    @"DELETE FROM Program
+                      WHERE programID = @programID;";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@programID", programId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
