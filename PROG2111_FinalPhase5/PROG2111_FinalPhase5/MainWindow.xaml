@@ -230,9 +230,8 @@
 							<RowDefinition/>
 							<RowDefinition/>
 							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
 							<RowDefinition/>
 						</Grid.RowDefinitions>
 
@@ -246,12 +245,7 @@
                             <Label Content="courseID" HorizontalAlignment="Center"/>
                             <TextBox Width="300" Name="txtCourseOfferingCourseID"/>
                         </StackPanel>
-						<!-- InstructorID -->
-                        <StackPanel Grid.Row="2">
-                            <Label Content="instructorID" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingInstructorID"/>
-                        </StackPanel>
-						<!-- termStart -->
+                        <!-- termStart -->
                         <StackPanel Grid.Row="3">
                             <Label Content="termStart" HorizontalAlignment="Center"/>
                             <TextBox Width="300" Name="txtCourseOfferingTermStart"/>
@@ -327,6 +321,27 @@
                         </StackPanel>
                         <Button Grid.Row="4" Margin="300, 5" Name="btnCourseEnrollmentSubmit" Content="Submit" Click="btnCourseEnrollmentSubmit_Click"/>
                     </Grid>
+                    
+                    <!--instructor assignment Grid-->
+                    <Grid Grid.Row="1" Name="createInstructorAssignmentGrid" Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <!--instructor id-->
+                        <StackPanel Grid.Row="0">
+                            <Label Content="instructorID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateInstructorAssignmentInstructorID"/>
+                        </StackPanel>
+                        <!--program id-->
+                        <StackPanel Grid.Row="1">
+                            <Label Content="offeringID" HorizontalAlignment="Center"/>
+                            <TextBox Width="300" Name="txtCreateInstructorAssignmentOfferingID"/>
+                        </StackPanel>
+
+                        <Button Grid.Row="2" Margin="300, 5" Name="btnCreateInstructorAssignmentSubmit" Content="Submit" Click="btnCreateInstructorAssignmentSubmit_Click"/>
+                    </Grid>
                 </Grid>
 			</TabItem>
 			<TabItem Header="Read">
@@ -356,6 +371,7 @@
 					<DataGrid Name="readInstructorDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 					<DataGrid Name="readCourseOfferingDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 					<DataGrid Name="readCourseEnrollmentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+					<DataGrid Name="readInstructorAssignmentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
 
 
 

@@ -26,6 +26,7 @@ namespace PROG2111_FinalPhase5
 		}
 
 		public DataTable ProgramCourseDataTable = new DataTable("ProgramCourseTable");
+		public static List<int[]> ProgramCourseKeys = new List<int[]>();
     }//end of ProgramCourseTable
 
 }//end of PROG2111_FinalPhase5
