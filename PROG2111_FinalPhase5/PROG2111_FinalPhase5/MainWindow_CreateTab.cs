@@ -3,13 +3,14 @@ using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using MySql.Data.MySqlClient;
 
 namespace PROG2111_FinalPhase5
 {
 	/*
 	 * FILE : MainWindow_CreateTab.cs
 	 * PROJECT : $safeprojectname$
-	 * PROGRAMMER : George Shapka
+	 * PROGRAMMER : George Shapka, Tuan Thanh Nguyen
 	 * FIRST VERSION : 12/8/2025 2:06:16 PM
 	 */
 	/// <summary>
@@ -52,182 +53,199 @@ namespace PROG2111_FinalPhase5
 					break;
 			}
 		}
-		private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
-		{
-			bool error = false;
+        private void btnStudentSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            bool error = false;
 
-			//student id
-			int studentID;
-			txtCreateStudentID.Background = Brushes.Transparent;
-			if (!int.TryParse(txtCreateStudentID.Text, out studentID))
-			{
-				txtCreateStudentID.Background = Brushes.Red;
-				error = true;
-			}
-			if(StudentTable.StudentIds.Contains(studentID))
-			{
-				txtCreateStudentID.Text = "Id Already Exists";
-				txtCreateStudentID.Background = Brushes.Red;
-				error = true;
-			}
+            // student id
+            int studentID;
+            txtCreateStudentID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateStudentID.Text, out studentID))
+            {
+                txtCreateStudentID.Background = Brushes.Red;
+                error = true;
+            }
 
-			//program id
-			int StudentProgramId;
-			txtCreateStudentProgramID.Background = Brushes.Transparent;
-			if (!int.TryParse(txtCreateStudentProgramID.Text, out StudentProgramId))
-			{
-				txtCreateStudentProgramID.Background = Brushes.Red;
-				error = true;
-			}
-			if(!ProgramTable.ProgramIds.Contains(StudentProgramId))
-			{
-				txtCreateStudentProgramID.Text = "Program Id Doesnt Exist";
-				txtCreateStudentProgramID.Background = Brushes.Red;
-				error = true;
-			}
+            // program id
+            int studentProgramId;
+            txtCreateStudentProgramID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateStudentProgramID.Text, out studentProgramId))
+            {
+                txtCreateStudentProgramID.Background = Brushes.Red;
+                error = true;
+            }
 
-			//firstname
-			txtCreateStudentFirstName.Background = Brushes.Transparent;
-			if(!(txtCreateStudentFirstName.Text.Length > 0))
-			{
-				txtCreateStudentFirstName.Background = Brushes.Red;
-				error = true;
-			}
+            // first name
+            txtCreateStudentFirstName.Background = Brushes.Transparent;
+            if (txtCreateStudentFirstName.Text.Trim().Length == 0)
+            {
+                txtCreateStudentFirstName.Background = Brushes.Red;
+                error = true;
+            }
 
-			//lastname
-			txtCreateStudentLastName.Background = Brushes.Transparent;
-			if(!(txtCreateStudentLastName.Text.Length > 0))
-			{
-				txtCreateStudentLastName.Background = Brushes.Red;
-				error = true;
-			}
+            // last name
+            txtCreateStudentLastName.Background = Brushes.Transparent;
+            if (txtCreateStudentLastName.Text.Trim().Length == 0)
+            {
+                txtCreateStudentLastName.Background = Brushes.Red;
+                error = true;
+            }
 
-			//email
-			txtCreateStudentEmail.Background = Brushes.Transparent;
-			if(!(txtCreateStudentEmail.Text.Length > 0))
-			{
-				txtCreateStudentEmail.Background = Brushes.Red;
-				error = true;
-			}
+            // email
+            txtCreateStudentEmail.Background = Brushes.Transparent;
+            if (txtCreateStudentEmail.Text.Trim().Length == 0)
+            {
+                txtCreateStudentEmail.Background = Brushes.Red;
+                error = true;
+            }
 
-			//dob
-			DateTime dateOfBirth;
-			dateCreateStudentDateOfBirth.Foreground = Brushes.Black;
-			if(!DateTime.TryParse(dateCreateStudentDateOfBirth.Text, out dateOfBirth))
-			{
-				dateCreateStudentDateOfBirth.Foreground = Brushes.Red;
-				error = true;
-			}
+            // date of birth
+            DateTime dateOfBirth;
+            dateCreateStudentDateOfBirth.Foreground = Brushes.Black;
+            if (!DateTime.TryParse(dateCreateStudentDateOfBirth.Text, out dateOfBirth))
+            {
+                dateCreateStudentDateOfBirth.Foreground = Brushes.Red;
+                error = true;
+            }
 
-			//date onrolled
-			DateTime dateEnrolled;
-			dateCreateStudentDateEnrolled.Foreground = Brushes.Black;
-			if (!DateTime.TryParse(dateCreateStudentDateEnrolled.Text, out dateEnrolled))
-			{
-				dateCreateStudentDateEnrolled.Foreground = Brushes.Red;
-				error = true;
-			}
-			if(error)
-			{
-				return;
-			}
+            // date enrolled
+            DateTime dateEnrolled;
+            dateCreateStudentDateEnrolled.Foreground = Brushes.Black;
+            if (!DateTime.TryParse(dateCreateStudentDateEnrolled.Text, out dateEnrolled))
+            {
+                dateCreateStudentDateEnrolled.Foreground = Brushes.Red;
+                error = true;
+            }
 
-			StudentTable.StudentIds.Add(studentID);
-			DataRow dr = db.studentTable.NewRow();
+            if (error)
+            {
+                return;
+            }
 
-			dr[0] = studentID;
-			dr[1] = StudentProgramId;
-			dr[2] = txtCreateStudentFirstName.Text;
-			dr[3] = txtCreateStudentLastName.Text;
-			dr[4] = txtCreateStudentEmail.Text;
-			dr[5] = dateOfBirth;
-			dr[6] = dateEnrolled;
+            try
+            {
+                StudentModel student = new StudentModel
+                {
+                    StudentId = studentID,
+                    ProgramId = studentProgramId,
+                    FirstName = txtCreateStudentFirstName.Text.Trim(),
+                    LastName = txtCreateStudentLastName.Text.Trim(),
+                    EmailAddress = txtCreateStudentEmail.Text.Trim(),
+                    DateOfBirth = dateOfBirth,
+                    DateEnrolled = dateEnrolled
+                };
 
-			db.studentTable.Rows.Add(dr);
+                db.InsertStudent(student);
 
-			txtCreateStudentID.Text = string.Empty;
-			txtCreateStudentProgramID.Text = string.Empty;
-			txtCreateStudentFirstName.Text = string.Empty;
-			txtCreateStudentLastName.Text = string.Empty;
-			txtCreateStudentEmail.Text = string.Empty;
-			dateCreateStudentDateOfBirth.Text = string.Empty;
-			dateCreateStudentDateEnrolled.Text = string.Empty;
-			return;
-		}
-		private void btnCreateProgramSubmit_Click(object sender, RoutedEventArgs e)
-		{
-			bool error = false;
+                MessageBox.Show("Student saved to database.", "Success",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
 
-			//id
-			int programId;
-			txtCreateProgramID.Background = Brushes.Transparent;
-			if (!int.TryParse(txtCreateProgramID.Text, out programId))
-			{
-				txtCreateProgramID.Background = Brushes.Red;
-				error = true;
-			}
-			if(ProgramTable.ProgramIds.Contains(programId))
-			{
-				txtCreateProgramID.Text = "Id already exists";
-				txtCreateProgramID.Background = Brushes.Red;
-				error = true;
-			}
+                // clear fields
+                txtCreateStudentID.Text = string.Empty;
+                txtCreateStudentProgramID.Text = string.Empty;
+                txtCreateStudentFirstName.Text = string.Empty;
+                txtCreateStudentLastName.Text = string.Empty;
+                txtCreateStudentEmail.Text = string.Empty;
+                dateCreateStudentDateOfBirth.Text = string.Empty;
+                dateCreateStudentDateEnrolled.Text = string.Empty;
 
-			//name
-			txtCreateProgramName.Background = Brushes.Transparent;
-			if(!(txtCreateProgramName.Text.Length > 0))
-			{
-				txtCreateProgramName.Background = Brushes.Red;
-				error = true;
-			}
+                RefreshReadGrids();
+            }
+            catch (MySqlException dbEx)
+            {
+                MessageBox.Show("Database error while saving student:\n" + dbEx.Message,
+                    "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unexpected error while saving student:\n" + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
-			//credential
-			txtCreateProgramCredential.Background = Brushes.Transparent;
-			if(!(txtCreateProgramCredential.Text.Length > 0))
-			{
-				txtCreateProgramCredential.Background= Brushes.Red;
-				error = true;
-			}
+        private void btnProgramSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            bool error = false;
 
-			//duration
-			int duration;
-			txtCreateProgramDuration.Background = Brushes.Transparent;
-			if(!int.TryParse(txtCreateProgramDuration.Text, out duration))
-			{
-				txtCreateProgramDuration.Background= Brushes.Red;
-				error = true;
-			}
+            // program id
+            int programId;
+            txtCreateProgramID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateProgramID.Text, out programId))
+            {
+                txtCreateProgramID.Background = Brushes.Red;
+                error = true;
+            }
 
-			//avalible
-			bool? avalible = chkCreateProgramAvaliblility.IsChecked;
-			if(avalible == null)
-			{
-				error = true;
-			}
+            // name
+            txtCreateProgramName.Background = Brushes.Transparent;
+            if (txtCreateProgramName.Text.Trim().Length == 0)
+            {
+                txtCreateProgramName.Background = Brushes.Red;
+                error = true;
+            }
 
-			if(error)
-			{
-				return;
-			}
+            // credential
+            txtCreateProgramCredential.Background = Brushes.Transparent;
+            if (txtCreateProgramCredential.Text.Trim().Length == 0)
+            {
+                txtCreateProgramCredential.Background = Brushes.Red;
+                error = true;
+            }
 
-			ProgramTable.ProgramIds.Add(programId);
-			DataRow dr = db.programTable.NewRow();
+            // duration
+            int duration;
+            txtCreateProgramDuration.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateProgramDuration.Text, out duration))
+            {
+                txtCreateProgramDuration.Background = Brushes.Red;
+                error = true;
+            }
 
-			dr[0] = programId;
-			dr[1] = txtCreateProgramName.Text;
-			dr[2] = txtCreateProgramCredential.Text;
-			dr[3] = duration;
-			dr[4] = avalible;
+            // availability checkbox
+            bool isAvailable = chkCreateProgramAvaliblility.IsChecked == true;
 
-			db.programTable.Rows.Add(dr);
+            if (error)
+            {
+                return;
+            }
 
-			txtCreateProgramID.Text = string.Empty;
-			txtCreateProgramName.Text = string.Empty;
-			txtCreateProgramCredential.Text = string.Empty;
-			txtCreateProgramDuration.Text = string.Empty;
-			return;
-		}
-		private void btnCreateCourseSubmit_Click(object sender, RoutedEventArgs e)
+            try
+            {
+                ProgramModel program = new ProgramModel
+                {
+                    ProgramId = programId,
+                    ProgramName = txtCreateProgramName.Text.Trim(),
+                    CredentialType = txtCreateProgramCredential.Text.Trim(),
+                    DurationInTerms = (byte)duration,
+                    IsAvailable = isAvailable
+                };
+
+                db.InsertProgram(program);
+
+                MessageBox.Show("Program saved to database.", "Success",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // clear fields
+                txtCreateProgramID.Text = string.Empty;
+                txtCreateProgramName.Text = string.Empty;
+                txtCreateProgramCredential.Text = string.Empty;
+                txtCreateProgramDuration.Text = string.Empty;
+                chkCreateProgramAvaliblility.IsChecked = false;
+
+                RefreshReadGrids();
+            }
+            catch (MySqlException dbEx)
+            {
+                MessageBox.Show("Database error while saving program:\n" + dbEx.Message,
+                    "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unexpected error while saving program:\n" + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void btnCreateCourseSubmit_Click(object sender, RoutedEventArgs e)
 		{
 			bool error = false;
 
