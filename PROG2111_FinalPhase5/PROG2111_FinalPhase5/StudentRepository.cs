@@ -145,12 +145,13 @@ namespace PROG2111_FinalPhase5
 
                 const string query = @"
                     INSERT INTO Student
-                        (programID, firstName, lastName, emailAddress, dateOfBirth, dateEnrolled)
+                        (studentID, programID, firstName, lastName, emailAddress, dateOfBirth, dateEnrolled)
                     VALUES
-                        (@programID, @firstName, @lastName, @emailAddress, @dateOfBirth, @dateEnrolled);";
+                        (@studentID, @programID, @firstName, @lastName, @emailAddress, @dateOfBirth, @dateEnrolled);";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
+                    cmd.Parameters.AddWithValue("@studentID", student.StudentId);
                     cmd.Parameters.AddWithValue("@programID", student.ProgramId);
                     cmd.Parameters.AddWithValue("@firstName", student.FirstName);
                     cmd.Parameters.AddWithValue("@lastName", student.LastName);
