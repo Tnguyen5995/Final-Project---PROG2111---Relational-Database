@@ -196,22 +196,22 @@ namespace PROG2111_FinalPhase5
             }
         }
 
-        private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO: Add logic to handle student creation here
-            MessageBox.Show("Student Submit button clicked!");
-        }
+        //private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // TODO: Add logic to handle student creation here
+        //    MessageBox.Show("Student Submit button clicked!");
+        //}
 
-        private void btnCreateProgramSubmit_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO: Add logic to handle the Program Submit button click
-            MessageBox.Show("Program Submit button clicked!");
-        }
+        //private void btnCreateProgramSubmit_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // TODO: Add logic to handle the Program Submit button click
+        //    MessageBox.Show("Program Submit button clicked!");
+        //}
 
-        private void btnCreateInstructorAssignmentSubmit_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO: Add logic to handle instructor assignment submission
-            MessageBox.Show("Instructor Assignment Submitted!");
-        }
+        //private void btnCreateInstructorAssignmentSubmit_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // TODO: Add logic to handle instructor assignment submission
+        //    MessageBox.Show("Instructor Assignment Submitted!");
+        //}
     }
 }

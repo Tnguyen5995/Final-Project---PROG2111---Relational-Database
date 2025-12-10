@@ -48,7 +48,10 @@ namespace PROG2111_FinalPhase5
 				case "Course Enrollment Table":
                     createCourseEnrollmentGrid.Visibility = Visibility.Visible;
 					break;
-			}
+                case "Instructor Assignment Table":
+                    createInstructorAssignmentGrid.Visibility = Visibility.Visible;
+                    break;
+            }
 		}
         private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
         {
@@ -635,6 +638,53 @@ namespace PROG2111_FinalPhase5
 			txtCreateCourseEnrollmentFinalGrade.Text = string.Empty;
 
             return;
+        }
+        private void btnCreateInstructorAssignmentSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            bool error = false;
+
+            //instructor id
+            int instructorId;
+            txtCreateInstructorAssignmentInstructorID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateInstructorAssignmentInstructorID.Text, out instructorId))
+            {
+                txtCreateInstructorAssignmentInstructorID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!InstructorTable.InstructorIds.Contains(instructorId))
+            {
+                txtCreateInstructorAssignmentInstructorID.Text = "Id doesnt exist";
+                txtCreateInstructorAssignmentInstructorID.Background = Brushes.Red;
+                error = true;
+            }
+            //offering id
+            int offeringId;
+            txtCreateInstructorAssignmentOfferingID.Background = Brushes.Transparent;
+            if (!int.TryParse(txtCreateInstructorAssignmentOfferingID.Text, out offeringId))
+            {
+                txtCreateInstructorAssignmentOfferingID.Background = Brushes.Red;
+                error = true;
+            }
+            if (!CourseOfferingTable.OfferingIds.Contains(offeringId))
+            {
+                txtCreateInstructorAssignmentOfferingID.Text = "Id doesnt exist";
+                txtCreateInstructorAssignmentOfferingID.Background = Brushes.Red;
+                error = true;
+            }
+
+            if (error)
+            {
+                return;
+            }
+
+            DataRow dr = db.InstructorAssignmentTable.NewRow();
+            dr[0] = instructorId;
+            dr[1] = offeringId;
+
+            db.InstructorAssignmentTable.Rows.Add(dr);
+
+            txtCreateInstructorAssignmentInstructorID.Text = string.Empty;
+            txtCreateInstructorAssignmentOfferingID.Text = string.Empty;
         }
     }
 }
