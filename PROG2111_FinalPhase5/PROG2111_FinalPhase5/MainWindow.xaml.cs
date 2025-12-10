@@ -16,18 +16,34 @@ namespace PROG2111_FinalPhase5
     public partial class MainWindow : Window
     {
         // Repositories for DB access
+        private readonly Database db;
         private readonly StudentRepository _studentRepository;
         private readonly ProgramRepository _programRepository;
+
+        // Add this field to your MainWindow class (at the top, with other controls)
+        private TextBox InstructorOfficeLocationTextBox;
+
 
         public MainWindow()
         {
             InitializeComponent();
 
+            // In your constructor (after InitializeComponent()), add this line to assign the control:
+            InstructorOfficeLocationTextBox = this.FindName("InstructorOfficeLocationTextBox") as TextBox;
+
             _studentRepository = new StudentRepository();
             _programRepository = new ProgramRepository();
+            db = new Database();
 
             LoadStudents();
             LoadPrograms();
+            LoadCourses();
+            LoadProgramCourseGrid();
+            LoadInstructorGrid();
+            LoadCourseOfferingGrid();
+            LoadCourseEnrollmentGrid();
+            LoadInstructorAssignmentGrid();
+
         }
 
         #region STUDENT HELPERS
@@ -394,5 +410,1348 @@ namespace PROG2111_FinalPhase5
         }
 
         #endregion
+        #region COURSE HELPERS
+        private void LoadCourses()
+        {
+            if (db.courseTable != null)
+            {
+                dgCourses.ItemsSource = db.courseTable.DefaultView;
+            }
+        }
+        private void dgCourses_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgCourses.SelectedItem is DataRowView row)
+            {
+                txtCourseId.Text = row["courseId"].ToString();
+                txtCourseTitle.Text = row["courseTitle"].ToString();
+                txtCourseDescription.Text = row["courseDescription"].ToString();
+                txtCourseHours.Text = row["courseHours"].ToString();
+            }
+        }
+
+        private void btnCourseCreate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Simple validation
+                if (string.IsNullOrWhiteSpace(txtCourseId.Text) ||
+                    string.IsNullOrWhiteSpace(txtCourseTitle.Text) ||
+                    string.IsNullOrWhiteSpace(txtCourseHours.Text))
+                {
+                    MessageBox.Show("Course ID, Title and Hours are required.");
+                    return;
+                }
+
+                int courseId;
+                int courseHours;
+
+                if (!int.TryParse(txtCourseId.Text, out courseId))
+                {
+                    MessageBox.Show("Course ID must be a whole number.");
+                    return;
+                }
+
+                if (!int.TryParse(txtCourseHours.Text, out courseHours))
+                {
+                    MessageBox.Show("Course hours must be a whole number.");
+                    return;
+                }
+
+                // Check for duplicate key
+                DataRow existing = db.courseTable.Rows.Find(courseId);
+                if (existing != null)
+                {
+                    MessageBox.Show("A course with this ID already exists.");
+                    return;
+                }
+
+                DataRow newRow = db.courseTable.NewRow();
+                newRow["courseId"] = courseId;
+                newRow["courseTitle"] = txtCourseTitle.Text.Trim();
+                newRow["courseDescription"] = txtCourseDescription.Text.Trim();
+                newRow["courseHours"] = courseHours;
+
+                db.courseTable.Rows.Add(newRow);
+
+                LoadCourses();
+                ClearCourseForm();
+
+                MessageBox.Show("Course created in memory (DataTable).");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating course: {ex.Message}");
+            }
+        }
+
+        private void btnCourseUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int courseId;
+                int courseHours;
+
+                if (!int.TryParse(txtCourseId.Text, out courseId))
+                {
+                    MessageBox.Show("Select a course from the grid or enter a valid Course ID.");
+                    return;
+                }
+
+                if (!int.TryParse(txtCourseHours.Text, out courseHours))
+                {
+                    MessageBox.Show("Course hours must be a whole number.");
+                    return;
+                }
+
+                DataRow existing = db.courseTable.Rows.Find(courseId);
+                if (existing == null)
+                {
+                    MessageBox.Show("Course not found.");
+                    return;
+                }
+
+                existing["courseTitle"] = txtCourseTitle.Text.Trim();
+                existing["courseDescription"] = txtCourseDescription.Text.Trim();
+                existing["courseHours"] = courseHours;
+
+                LoadCourses();
+                MessageBox.Show("Course updated.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating course: {ex.Message}");
+            }
+        }
+
+        private void btnCourseDelete_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int courseId;
+
+                if (!int.TryParse(txtCourseId.Text, out courseId))
+                {
+                    MessageBox.Show("Select a course from the grid or enter a valid Course ID.");
+                    return;
+                }
+
+                DataRow existing = db.courseTable.Rows.Find(courseId);
+                if (existing == null)
+                {
+                    MessageBox.Show("Course not found.");
+                    return;
+                }
+
+                if (MessageBox.Show("Delete this course?", "Confirm",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                {
+                    db.courseTable.Rows.Remove(existing);
+                    LoadCourses();
+                    ClearCourseForm();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting course: {ex.Message}");
+            }
+        }
+
+        private void btnCourseClear_Click(object sender, RoutedEventArgs e)
+        {
+            ClearCourseForm();
+        }
+
+        private void ClearCourseForm()
+        {
+            txtCourseId.Text = string.Empty;
+            txtCourseTitle.Text = string.Empty;
+            txtCourseDescription.Text = string.Empty;
+            txtCourseHours.Text = string.Empty;
+            dgCourses.SelectedItem = null;
+        }
+
+        private void btnCourseRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            LoadCourses();   
+        }
+
+
+        #endregion
+
+        #region PROGRAMCOURSE HELPERS
+
+        // ===============================
+        // ProgramCourse tab helpers
+        // ===============================
+        private void LoadProgramCourseGrid()
+        {
+            // Bind the grid to the in-memory ProgramCourse DataTable
+            ProgramCourseDataGrid.ItemsSource = db.programCourseTable.DefaultView;
+        }
+
+        private void ClearProgramCourseForm()
+        {
+            ProgramCourseProgramIdTextBox.Text = string.Empty;
+            ProgramCourseCourseIdTextBox.Text = string.Empty;
+            ProgramCourseDataGrid.SelectedItem = null;
+        }
+
+        // When a row is selected, populate the form
+        private void ProgramCourseDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ProgramCourseDataGrid.SelectedItem is DataRowView row)
+            {
+                ProgramCourseProgramIdTextBox.Text = row["programId"]?.ToString();
+                ProgramCourseCourseIdTextBox.Text = row["courseId"]?.ToString();
+            }
+        }
+        #endregion
+
+
+        #region PROGRAMCOURSE EVENTS
+        private void AddProgramCourseButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int programId;
+                int courseId;
+
+                if (!int.TryParse(ProgramCourseProgramIdTextBox.Text, out programId))
+                {
+                    MessageBox.Show("Program ID must be a whole number.");
+                    return;
+                }
+
+                if (!int.TryParse(ProgramCourseCourseIdTextBox.Text, out courseId))
+                {
+                    MessageBox.Show("Course ID must be a whole number.");
+                    return;
+                }
+
+                // Optional: check that the IDs exist in Program/Course tables
+                if (!ProgramTable.ProgramIds.Contains(programId))
+                {
+                    MessageBox.Show("Program ID does not exist in the Programs table.");
+                    return;
+                }
+
+                if (!CourseTable.CourseIds.Contains(courseId))
+                {
+                    MessageBox.Show("Course ID does not exist in the Courses table.");
+                    return;
+                }
+
+                // Ensure the mapping does not already exist (primary key: programId + courseId)
+                DataRow existing = db.programCourseTable.Rows.Find(new object[] { programId, courseId });
+                if (existing != null)
+                {
+                    MessageBox.Show("This Program–Course mapping already exists.");
+                    return;
+                }
+
+                DataRow newRow = db.programCourseTable.NewRow();
+                newRow["programId"] = programId;
+                newRow["courseId"] = courseId;
+
+                db.programCourseTable.Rows.Add(newRow);
+
+                // keep static key list in sync (if you still use it elsewhere)
+                ProgramCourseTable.ProgramCourseKeys.Add(new[] { programId, courseId });
+
+                LoadProgramCourseGrid();
+                ClearProgramCourseForm();
+
+                MessageBox.Show("Program–Course mapping added.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding Program–Course mapping: {ex.Message}");
+            }
+        }
+        private void UpdateProgramCourseButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (ProgramCourseDataGrid.SelectedItem is DataRowView selectedRow)
+                {
+                    // Original key from the selected row
+                    int originalProgramId = Convert.ToInt32(selectedRow["programId"]);
+                    int originalCourseId = Convert.ToInt32(selectedRow["courseId"]);
+
+                    // New values from the form
+                    int newProgramId;
+                    int newCourseId;
+
+                    if (!int.TryParse(ProgramCourseProgramIdTextBox.Text, out newProgramId))
+                    {
+                        MessageBox.Show("Program ID must be a whole number.");
+                        return;
+                    }
+
+                    if (!int.TryParse(ProgramCourseCourseIdTextBox.Text, out newCourseId))
+                    {
+                        MessageBox.Show("Course ID must be a whole number.");
+                        return;
+                    }
+
+                    if (!ProgramTable.ProgramIds.Contains(newProgramId))
+                    {
+                        MessageBox.Show("Program ID does not exist in the Programs table.");
+                        return;
+                    }
+
+                    if (!CourseTable.CourseIds.Contains(newCourseId))
+                    {
+                        MessageBox.Show("Course ID does not exist in the Courses table.");
+                        return;
+                    }
+
+                    // If key didn't actually change, nothing to do
+                    if (originalProgramId == newProgramId && originalCourseId == newCourseId)
+                    {
+                        MessageBox.Show("No changes detected to the Program–Course mapping.");
+                        return;
+                    }
+
+                    // Check for duplicate new key (other than the current row)
+                    DataRow existingNew = db.programCourseTable.Rows.Find(new object[] { newProgramId, newCourseId });
+                    if (existingNew != null &&
+                        !(originalProgramId == newProgramId && originalCourseId == newCourseId))
+                    {
+                        MessageBox.Show("Another mapping already uses this Program ID and Course ID.");
+                        return;
+                    }
+
+                    // Remove old row
+                    DataRow oldRow = db.programCourseTable.Rows.Find(new object[] { originalProgramId, originalCourseId });
+                    if (oldRow != null)
+                    {
+                        db.programCourseTable.Rows.Remove(oldRow);
+                    }
+
+                    // Insert new row
+                    DataRow newRow = db.programCourseTable.NewRow();
+                    newRow["programId"] = newProgramId;
+                    newRow["courseId"] = newCourseId;
+                    db.programCourseTable.Rows.Add(newRow);
+
+                    // Update static list
+                    ProgramCourseTable.ProgramCourseKeys.RemoveAll(
+                        pair => pair[0] == originalProgramId && pair[1] == originalCourseId);
+                    ProgramCourseTable.ProgramCourseKeys.Add(new[] { newProgramId, newCourseId });
+
+                    LoadProgramCourseGrid();
+                    ClearProgramCourseForm();
+
+                    MessageBox.Show("Program–Course mapping updated.");
+                }
+                else
+                {
+                    MessageBox.Show("Select a mapping from the list first.");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating Program–Course mapping: {ex.Message}");
+            }
+        }
+
+        private void DeleteProgramCourseButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (ProgramCourseDataGrid.SelectedItem is DataRowView selectedRow)
+                {
+                    int programId = Convert.ToInt32(selectedRow["programId"]);
+                    int courseId = Convert.ToInt32(selectedRow["courseId"]);
+
+                    if (MessageBox.Show(
+                            $"Delete mapping Program {programId} – Course {courseId}?",
+                            "Confirm Delete",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                    {
+                        return;
+                    }
+
+                    DataRow existing = db.programCourseTable.Rows.Find(new object[] { programId, courseId });
+                    if (existing != null)
+                    {
+                        db.programCourseTable.Rows.Remove(existing);
+                    }
+
+                    ProgramCourseTable.ProgramCourseKeys.RemoveAll(
+                        pair => pair[0] == programId && pair[1] == courseId);
+
+                    LoadProgramCourseGrid();
+                    ClearProgramCourseForm();
+
+                    MessageBox.Show("Program–Course mapping deleted.");
+                }
+                else
+                {
+                    MessageBox.Show("Select a mapping to delete.");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting Program–Course mapping: {ex.Message}");
+            }
+        }
+        private void ClearProgramCourseButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearProgramCourseForm();
+        }
+
+        private void RefreshProgramCourseButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadProgramCourseGrid();
+        }
+        #endregion
+
+        #region INSTRUCTOER HELPERS
+        // ===============================
+        // Instructor tab helpers
+        // ===============================
+        private void LoadInstructorGrid()
+        {
+            InstructorDataGrid.ItemsSource = db.instructorTable.DefaultView;
+        }
+
+        private void ClearInstructorForm()
+        {
+            InstructorIdTextBox.Text = string.Empty;
+            InstructorFirstNameTextBox.Text = string.Empty;
+            InstructorLastNameTextBox.Text = string.Empty;
+            InstructorEmailTextBox.Text = string.Empty;
+            InstructorHireDatePicker.SelectedDate = null;
+            InstructorOfficeLocationTextBox.Text = string.Empty;
+
+            InstructorDataGrid.SelectedItem = null;
+        }
+
+        // When a row is selected, populate the form
+        private void InstructorDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (InstructorDataGrid.SelectedItem is DataRowView row)
+            {
+                InstructorIdTextBox.Text = row["instructorId"]?.ToString();
+                InstructorFirstNameTextBox.Text = row["firstName"]?.ToString();
+                InstructorLastNameTextBox.Text = row["lastName"]?.ToString();
+                InstructorEmailTextBox.Text = row["email"]?.ToString();
+
+                DateTime hireDate;
+                if (DateTime.TryParse(row["hireDate"]?.ToString(), out hireDate))
+                {
+                    InstructorHireDatePicker.SelectedDate = hireDate;
+                }
+                else
+                {
+                    InstructorHireDatePicker.SelectedDate = null;
+                }
+
+                // NOTE: column name has typo "officeLocation" in the DataTable definition
+                InstructorOfficeLocationTextBox.Text = row["officeLocation"]?.ToString();
+            }
+        }
+        private void AddInstructorButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int instructorId;
+                if (!int.TryParse(InstructorIdTextBox.Text, out instructorId))
+                {
+                    MessageBox.Show("Instructor ID must be a whole number.");
+                    return;
+                }
+
+                if (instructorId <= 0)
+                {
+                    MessageBox.Show("Instructor ID must be positive.");
+                    return;
+                }
+
+                // Check for duplicate ID
+                if (db.instructorTable.Rows.Find(instructorId) != null ||
+                    InstructorTable.InstructorIds.Contains(instructorId))
+                {
+                    MessageBox.Show("An instructor with this ID already exists.");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(InstructorFirstNameTextBox.Text) ||
+                    string.IsNullOrWhiteSpace(InstructorLastNameTextBox.Text) ||
+                    string.IsNullOrWhiteSpace(InstructorEmailTextBox.Text) ||
+                    string.IsNullOrWhiteSpace(InstructorOfficeLocationTextBox.Text))
+                {
+                    MessageBox.Show("First name, last name, email, and office location are required.");
+                    return;
+                }
+
+                if (InstructorHireDatePicker.SelectedDate == null)
+                {
+                    MessageBox.Show("Please select a hire date.");
+                    return;
+                }
+
+                DateTime hireDate = InstructorHireDatePicker.SelectedDate.Value;
+
+                DataRow newRow = db.instructorTable.NewRow();
+                newRow["instructorId"] = instructorId;
+                newRow["firstName"] = InstructorFirstNameTextBox.Text.Trim();
+                newRow["lastName"] = InstructorLastNameTextBox.Text.Trim();
+                newRow["email"] = InstructorEmailTextBox.Text.Trim();
+                newRow["hireDate"] = hireDate;
+                newRow["officeLoaction"] = InstructorOfficeLocationTextBox.Text.Trim(); // typo column
+
+                db.instructorTable.Rows.Add(newRow);
+                InstructorTable.InstructorIds.Add(instructorId);
+
+                LoadInstructorGrid();
+                ClearInstructorForm();
+
+                MessageBox.Show("Instructor added.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding instructor: {ex.Message}");
+            }
+        }
+        private void UpdateInstructorButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int instructorId;
+                if (!int.TryParse(InstructorIdTextBox.Text, out instructorId))
+                {
+                    MessageBox.Show("Select an instructor from the list or enter a valid Instructor ID.");
+                    return;
+                }
+
+                DataRow existing = db.instructorTable.Rows.Find(instructorId);
+                if (existing == null)
+                {
+                    MessageBox.Show("Instructor not found.");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(InstructorFirstNameTextBox.Text) ||
+                    string.IsNullOrWhiteSpace(InstructorLastNameTextBox.Text) ||
+                    string.IsNullOrWhiteSpace(InstructorEmailTextBox.Text) ||
+                    string.IsNullOrWhiteSpace(InstructorOfficeLocationTextBox.Text))
+                {
+                    MessageBox.Show("First name, last name, email, and office location are required.");
+                    return;
+                }
+
+                if (InstructorHireDatePicker.SelectedDate == null)
+                {
+                    MessageBox.Show("Please select a hire date.");
+                    return;
+                }
+
+                DateTime hireDate = InstructorHireDatePicker.SelectedDate.Value;
+
+                existing["firstName"] = InstructorFirstNameTextBox.Text.Trim();
+                existing["lastName"] = InstructorLastNameTextBox.Text.Trim();
+                existing["email"] = InstructorEmailTextBox.Text.Trim();
+                existing["hireDate"] = hireDate;
+                existing["officeLoaction"] = InstructorOfficeLocationTextBox.Text.Trim();
+
+                LoadInstructorGrid();
+                ClearInstructorForm();
+
+                MessageBox.Show("Instructor updated.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating instructor: {ex.Message}");
+            }
+        }
+        private void DeleteInstructorButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int instructorId;
+                if (!int.TryParse(InstructorIdTextBox.Text, out instructorId))
+                {
+                    MessageBox.Show("Select an instructor from the list or enter a valid Instructor ID.");
+                    return;
+                }
+
+                DataRow existing = db.instructorTable.Rows.Find(instructorId);
+                if (existing == null)
+                {
+                    MessageBox.Show("Instructor not found.");
+                    return;
+                }
+
+                var confirm = MessageBox.Show(
+                    $"Delete instructor #{instructorId}?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (confirm != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                db.instructorTable.Rows.Remove(existing);
+                InstructorTable.InstructorIds.Remove(instructorId);
+
+                LoadInstructorGrid();
+                ClearInstructorForm();
+
+                MessageBox.Show("Instructor deleted.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting instructor: {ex.Message}");
+            }
+        }
+        private void ClearInstructorButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearInstructorForm();
+        }
+
+        private void RefreshInstructorButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadInstructorGrid();
+        }
+        #endregion
+
+        #region COURSEOFFERING HELPERS
+        // ===============================
+        // Course Offering tab helpers
+        // ===============================
+        private void LoadCourseOfferingGrid()
+        {
+            CourseOfferingDataGrid.ItemsSource = db.CourseOfferingTable.DefaultView;
+        }
+
+        private void ClearCourseOfferingForm()
+        {
+            OfferingIdTextBox.Text = string.Empty;
+            OfferingCourseIdTextBox.Text = string.Empty;
+            OfferingTermStartTextBox.Text = string.Empty;
+            OfferingTermEndTextBox.Text = string.Empty;
+            OfferingAcademicYearTextBox.Text = string.Empty;
+            OfferingScheduleInfoTextBox.Text = string.Empty;
+            OfferingSelectionCodeTextBox.Text = string.Empty;
+            OfferingDeliveryModeTextBox.Text = string.Empty;
+            OfferingMaxCapacityTextBox.Text = string.Empty;
+            OfferingRoomLocationTextBox.Text = string.Empty;
+
+            CourseOfferingDataGrid.SelectedItem = null;
+        }
+        private void CourseOfferingDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CourseOfferingDataGrid.SelectedItem is DataRowView row)
+            {
+                OfferingIdTextBox.Text = row["offeringId"]?.ToString();
+                OfferingCourseIdTextBox.Text = row["courseId"]?.ToString();
+                OfferingTermStartTextBox.Text = row["termStart"]?.ToString();
+                OfferingTermEndTextBox.Text = row["termEnd"]?.ToString();
+                // note: column is "acedemicYear" in the DataTable
+                OfferingAcademicYearTextBox.Text = row["acedemicYear"]?.ToString();
+                OfferingScheduleInfoTextBox.Text = row["scheduleInfo"]?.ToString();
+                OfferingSelectionCodeTextBox.Text = row["selectionCode"]?.ToString();
+                OfferingDeliveryModeTextBox.Text = row["deliveryMode"]?.ToString();
+                OfferingMaxCapacityTextBox.Text = row["maxCapacity"]?.ToString();
+                OfferingRoomLocationTextBox.Text = row["roomLocation"]?.ToString();
+            }
+        }
+        private void AddCourseOfferingButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int offeringId;
+                int courseId;
+                int termStart;
+                int termEnd;
+                int academicYear;
+                int selectionCode;
+                int maxCapacity;
+
+                if (!int.TryParse(OfferingIdTextBox.Text, out offeringId))
+                {
+                    MessageBox.Show("Offering ID must be a whole number.");
+                    return;
+                }
+
+                if (offeringId <= 0)
+                {
+                    MessageBox.Show("Offering ID must be positive.");
+                    return;
+                }
+
+                if (!int.TryParse(OfferingCourseIdTextBox.Text, out courseId))
+                {
+                    MessageBox.Show("Course ID must be a whole number.");
+                    return;
+                }
+
+                // Optional: ensure course exists
+                if (!CourseTable.CourseIds.Contains(courseId))
+                {
+                    MessageBox.Show("Course ID does not exist in the Courses table.");
+                    return;
+                }
+
+                if (!int.TryParse(OfferingTermStartTextBox.Text, out termStart) ||
+                    !int.TryParse(OfferingTermEndTextBox.Text, out termEnd))
+                {
+                    MessageBox.Show("Term start and term end must be whole numbers.");
+                    return;
+                }
+
+                if (!int.TryParse(OfferingAcademicYearTextBox.Text, out academicYear))
+                {
+                    MessageBox.Show("Academic year must be a whole number.");
+                    return;
+                }
+
+                if (!int.TryParse(OfferingSelectionCodeTextBox.Text, out selectionCode))
+                {
+                    MessageBox.Show("Selection code must be a whole number.");
+                    return;
+                }
+
+                if (!int.TryParse(OfferingMaxCapacityTextBox.Text, out maxCapacity))
+                {
+                    MessageBox.Show("Max capacity must be a whole number.");
+                    return;
+                }
+
+                string scheduleInfo = OfferingScheduleInfoTextBox.Text.Trim();
+                string deliveryMode = OfferingDeliveryModeTextBox.Text.Trim();
+                string roomLocation = OfferingRoomLocationTextBox.Text.Trim();
+
+                if (string.IsNullOrWhiteSpace(scheduleInfo) ||
+                    string.IsNullOrWhiteSpace(deliveryMode) ||
+                    string.IsNullOrWhiteSpace(roomLocation))
+                {
+                    MessageBox.Show("Schedule info, delivery mode, and room location are required.");
+                    return;
+                }
+
+                // Check for duplicate offering ID (PK)
+                if (db.CourseOfferingTable.Rows.Find(offeringId) != null ||
+                    CourseOfferingTable.OfferingIds.Contains(offeringId))
+                {
+                    MessageBox.Show("An offering with this ID already exists.");
+                    return;
+                }
+
+                DataRow newRow = db.CourseOfferingTable.NewRow();
+                newRow["offeringId"] = offeringId;
+                newRow["courseId"] = courseId;
+                newRow["termStart"] = termStart;
+                newRow["termEnd"] = termEnd;
+                newRow["acedemicYear"] = academicYear;   // typo column name
+                newRow["scheduleInfo"] = scheduleInfo;
+                newRow["selectionCode"] = selectionCode;
+                newRow["deliveryMode"] = deliveryMode;
+                newRow["maxCapacity"] = maxCapacity;
+                newRow["roomLocation"] = roomLocation;
+
+                db.CourseOfferingTable.Rows.Add(newRow);
+                CourseOfferingTable.OfferingIds.Add(offeringId);
+
+                LoadCourseOfferingGrid();
+                ClearCourseOfferingForm();
+
+                MessageBox.Show("Course offering added.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding course offering: {ex.Message}");
+            }
+        }
+        private void UpdateCourseOfferingButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int offeringId;
+                if (!int.TryParse(OfferingIdTextBox.Text, out offeringId))
+                {
+                    MessageBox.Show("Select an offering or enter a valid Offering ID.");
+                    return;
+                }
+
+                DataRow existing = db.CourseOfferingTable.Rows.Find(offeringId);
+                if (existing == null)
+                {
+                    MessageBox.Show("Offering not found.");
+                    return;
+                }
+
+                int courseId;
+                int termStart;
+                int termEnd;
+                int academicYear;
+                int selectionCode;
+                int maxCapacity;
+
+                if (!int.TryParse(OfferingCourseIdTextBox.Text, out courseId))
+                {
+                    MessageBox.Show("Course ID must be a whole number.");
+                    return;
+                }
+
+                if (!CourseTable.CourseIds.Contains(courseId))
+                {
+                    MessageBox.Show("Course ID does not exist in the Courses table.");
+                    return;
+                }
+
+                if (!int.TryParse(OfferingTermStartTextBox.Text, out termStart) ||
+                    !int.TryParse(OfferingTermEndTextBox.Text, out termEnd))
+                {
+                    MessageBox.Show("Term start and term end must be whole numbers.");
+                    return;
+                }
+
+                if (!int.TryParse(OfferingAcademicYearTextBox.Text, out academicYear))
+                {
+                    MessageBox.Show("Academic year must be a whole number.");
+                    return;
+                }
+
+                if (!int.TryParse(OfferingSelectionCodeTextBox.Text, out selectionCode))
+                {
+                    MessageBox.Show("Selection code must be a whole number.");
+                    return;
+                }
+
+                if (!int.TryParse(OfferingMaxCapacityTextBox.Text, out maxCapacity))
+                {
+                    MessageBox.Show("Max capacity must be a whole number.");
+                    return;
+                }
+
+                string scheduleInfo = OfferingScheduleInfoTextBox.Text.Trim();
+                string deliveryMode = OfferingDeliveryModeTextBox.Text.Trim();
+                string roomLocation = OfferingRoomLocationTextBox.Text.Trim();
+
+                if (string.IsNullOrWhiteSpace(scheduleInfo) ||
+                    string.IsNullOrWhiteSpace(deliveryMode) ||
+                    string.IsNullOrWhiteSpace(roomLocation))
+                {
+                    MessageBox.Show("Schedule info, delivery mode, and room location are required.");
+                    return;
+                }
+
+                existing["courseId"] = courseId;
+                existing["termStart"] = termStart;
+                existing["termEnd"] = termEnd;
+                existing["acedemicYear"] = academicYear;
+                existing["scheduleInfo"] = scheduleInfo;
+                existing["selectionCode"] = selectionCode;
+                existing["deliveryMode"] = deliveryMode;
+                existing["maxCapacity"] = maxCapacity;
+                existing["roomLocation"] = roomLocation;
+
+                LoadCourseOfferingGrid();
+                ClearCourseOfferingForm();
+
+                MessageBox.Show("Course offering updated.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating course offering: {ex.Message}");
+            }
+        }
+        private void DeleteCourseOfferingButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int offeringId;
+                if (!int.TryParse(OfferingIdTextBox.Text, out offeringId))
+                {
+                    MessageBox.Show("Select an offering or enter a valid Offering ID.");
+                    return;
+                }
+
+                DataRow existing = db.CourseOfferingTable.Rows.Find(offeringId);
+                if (existing == null)
+                {
+                    MessageBox.Show("Offering not found.");
+                    return;
+                }
+
+                var result = MessageBox.Show(
+                    $"Delete offering #{offeringId}?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                db.CourseOfferingTable.Rows.Remove(existing);
+                CourseOfferingTable.OfferingIds.Remove(offeringId);
+
+                LoadCourseOfferingGrid();
+                ClearCourseOfferingForm();
+
+                MessageBox.Show("Course offering deleted.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting course offering: {ex.Message}");
+            }
+        }
+        private void ClearCourseOfferingButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearCourseOfferingForm();
+        }
+
+        private void RefreshCourseOfferingButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadCourseOfferingGrid();
+        }
+        #endregion
+
+        #region COURSE ENROLLMENT HELPERS
+        // ===============================
+        // Course Enrollment tab helpers
+        // ===============================
+        private void LoadCourseEnrollmentGrid()
+        {
+            CourseEnrollmentDataGrid.ItemsSource = db.CourseEnrollmentTable.DefaultView;
+        }
+
+        private void ClearCourseEnrollmentForm()
+        {
+            EnrollmentStudentIdTextBox.Text = string.Empty;
+            EnrollmentOfferingIdTextBox.Text = string.Empty;
+            EnrollmentStatusTextBox.Text = string.Empty;
+            EnrollmentFinalGradeTextBox.Text = string.Empty;
+
+            CourseEnrollmentDataGrid.SelectedItem = null;
+        }
+        private void CourseEnrollmentDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CourseEnrollmentDataGrid.SelectedItem is DataRowView row)
+            {
+                EnrollmentStudentIdTextBox.Text = row["studentId"]?.ToString();
+                EnrollmentOfferingIdTextBox.Text = row["offeringId"]?.ToString();
+                EnrollmentStatusTextBox.Text = row["enrollmentStatus"]?.ToString();
+                EnrollmentFinalGradeTextBox.Text = row["finalGrade"]?.ToString();
+            }
+        }
+        private void AddCourseEnrollmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int studentId;
+                int offeringId;
+                float finalGrade;
+
+                if (!int.TryParse(EnrollmentStudentIdTextBox.Text, out studentId))
+                {
+                    MessageBox.Show("Student ID must be a whole number.");
+                    return;
+                }
+
+                if (!int.TryParse(EnrollmentOfferingIdTextBox.Text, out offeringId))
+                {
+                    MessageBox.Show("Offering ID must be a whole number.");
+                    return;
+                }
+
+                // Validate existence in related tables
+                if (!StudentTable.StudentIds.Contains(studentId))
+                {
+                    MessageBox.Show("Student ID does not exist in the Students table.");
+                    return;
+                }
+
+                if (!CourseOfferingTable.OfferingIds.Contains(offeringId))
+                {
+                    MessageBox.Show("Offering ID does not exist in the Offerings table.");
+                    return;
+                }
+
+                string status = EnrollmentStatusTextBox.Text.Trim();
+                if (string.IsNullOrWhiteSpace(status))
+                {
+                    MessageBox.Show("Enrollment status is required.");
+                    return;
+                }
+
+                if (!float.TryParse(EnrollmentFinalGradeTextBox.Text, out finalGrade))
+                {
+                    // allow blank final grade – treat as 0
+                    if (string.IsNullOrWhiteSpace(EnrollmentFinalGradeTextBox.Text))
+                    {
+                        finalGrade = 0f;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Final grade must be a number.");
+                        return;
+                    }
+                }
+
+                // Check for duplicate (PK is studentId + offeringId)
+                DataRow existing = db.CourseEnrollmentTable.Rows.Find(new object[] { studentId, offeringId });
+                if (existing != null)
+                {
+                    MessageBox.Show("This student is already enrolled in that offering.");
+                    return;
+                }
+
+                DataRow newRow = db.CourseEnrollmentTable.NewRow();
+                newRow["studentId"] = studentId;
+                newRow["offeringId"] = offeringId;
+                newRow["enrollmentStatus"] = status;
+                newRow["finalGrade"] = finalGrade;
+
+                db.CourseEnrollmentTable.Rows.Add(newRow);
+
+                LoadCourseEnrollmentGrid();
+                ClearCourseEnrollmentForm();
+
+                MessageBox.Show("Enrollment added.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding enrollment: {ex.Message}");
+            }
+        }
+        private void UpdateCourseEnrollmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int studentId;
+                int offeringId;
+                float finalGrade;
+
+                if (!int.TryParse(EnrollmentStudentIdTextBox.Text, out studentId))
+                {
+                    MessageBox.Show("Select an enrollment or enter a valid Student ID.");
+                    return;
+                }
+
+                if (!int.TryParse(EnrollmentOfferingIdTextBox.Text, out offeringId))
+                {
+                    MessageBox.Show("Select an enrollment or enter a valid Offering ID.");
+                    return;
+                }
+
+                DataRow existing = db.CourseEnrollmentTable.Rows.Find(new object[] { studentId, offeringId });
+                if (existing == null)
+                {
+                    MessageBox.Show("Enrollment not found.");
+                    return;
+                }
+
+                string status = EnrollmentStatusTextBox.Text.Trim();
+                if (string.IsNullOrWhiteSpace(status))
+                {
+                    MessageBox.Show("Enrollment status is required.");
+                    return;
+                }
+
+                if (!float.TryParse(EnrollmentFinalGradeTextBox.Text, out finalGrade))
+                {
+                    if (string.IsNullOrWhiteSpace(EnrollmentFinalGradeTextBox.Text))
+                    {
+                        finalGrade = 0f;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Final grade must be a number.");
+                        return;
+                    }
+                }
+
+                existing["enrollmentStatus"] = status;
+                existing["finalGrade"] = finalGrade;
+
+                LoadCourseEnrollmentGrid();
+                ClearCourseEnrollmentForm();
+
+                MessageBox.Show("Enrollment updated.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating enrollment: {ex.Message}");
+            }
+        }
+        private void DeleteCourseEnrollmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int studentId;
+                int offeringId;
+
+                if (!int.TryParse(EnrollmentStudentIdTextBox.Text, out studentId))
+                {
+                    MessageBox.Show("Select an enrollment or enter a valid Student ID.");
+                    return;
+                }
+
+                if (!int.TryParse(EnrollmentOfferingIdTextBox.Text, out offeringId))
+                {
+                    MessageBox.Show("Select an enrollment or enter a valid Offering ID.");
+                    return;
+                }
+
+                DataRow existing = db.CourseEnrollmentTable.Rows.Find(new object[] { studentId, offeringId });
+                if (existing == null)
+                {
+                    MessageBox.Show("Enrollment not found.");
+                    return;
+                }
+
+                var confirm = MessageBox.Show(
+                    $"Delete enrollment for student {studentId} in offering {offeringId}?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (confirm != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                db.CourseEnrollmentTable.Rows.Remove(existing);
+
+                LoadCourseEnrollmentGrid();
+                ClearCourseEnrollmentForm();
+
+                MessageBox.Show("Enrollment deleted.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting enrollment: {ex.Message}");
+            }
+        }
+        private void ClearCourseEnrollmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearCourseEnrollmentForm();
+        }
+
+        private void RefreshCourseEnrollmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadCourseEnrollmentGrid();
+        }
+        #endregion
+        #region INSTRUCTOR ASSIGNMENT HELPERS
+        // ===============================
+        // Instructor Assignment tab helpers
+        // ===============================
+        private void LoadInstructorAssignmentGrid()
+        {
+            InstructorAssignmentDataGrid.ItemsSource = db.InstructorAssignmentTable.DefaultView;
+        }
+
+        private void ClearInstructorAssignmentForm()
+        {
+            AssignmentInstructorIdTextBox.Text = string.Empty;
+            AssignmentOfferingIdTextBox.Text = string.Empty;
+
+            InstructorAssignmentDataGrid.SelectedItem = null;
+        }
+        private void InstructorAssignmentDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (InstructorAssignmentDataGrid.SelectedItem is DataRowView row)
+            {
+                AssignmentInstructorIdTextBox.Text = row["instructorId"]?.ToString();
+                AssignmentOfferingIdTextBox.Text = row["offeringId"]?.ToString();
+            }
+        }
+        private void AddInstructorAssignmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int instructorId;
+                int offeringId;
+
+                if (!int.TryParse(AssignmentInstructorIdTextBox.Text, out instructorId))
+                {
+                    MessageBox.Show("Instructor ID must be a whole number.");
+                    return;
+                }
+
+                if (!int.TryParse(AssignmentOfferingIdTextBox.Text, out offeringId))
+                {
+                    MessageBox.Show("Offering ID must be a whole number.");
+                    return;
+                }
+
+                // Validate existence in related tables
+                if (!InstructorTable.InstructorIds.Contains(instructorId))
+                {
+                    MessageBox.Show("Instructor ID does not exist in the Instructors table.");
+                    return;
+                }
+
+                if (!CourseOfferingTable.OfferingIds.Contains(offeringId))
+                {
+                    MessageBox.Show("Offering ID does not exist in the CourseOfferings table.");
+                    return;
+                }
+
+                // Check for duplicate (PK is instructorId + offeringId)
+                DataRow existing = db.InstructorAssignmentTable.Rows.Find(new object[] { instructorId, offeringId });
+                if (existing != null)
+                {
+                    MessageBox.Show("This instructor is already assigned to that offering.");
+                    return;
+                }
+
+                DataRow newRow = db.InstructorAssignmentTable.NewRow();
+                newRow["instructorId"] = instructorId;
+                newRow["offeringId"] = offeringId;
+
+                db.InstructorAssignmentTable.Rows.Add(newRow);
+
+                LoadInstructorAssignmentGrid();
+                ClearInstructorAssignmentForm();
+
+                MessageBox.Show("Instructor assignment added.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding instructor assignment: {ex.Message}");
+            }
+        }
+        private void UpdateInstructorAssignmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!(InstructorAssignmentDataGrid.SelectedItem is DataRowView selectedRowView))
+                {
+                    MessageBox.Show("Select an assignment row from the grid first.");
+                    return;
+                }
+
+                // old PK values (from selected row)
+                int oldInstructorId = Convert.ToInt32(selectedRowView["instructorId"]);
+                int oldOfferingId = Convert.ToInt32(selectedRowView["offeringId"]);
+
+                // new values from textboxes
+                int newInstructorId;
+                int newOfferingId;
+
+                if (!int.TryParse(AssignmentInstructorIdTextBox.Text, out newInstructorId))
+                {
+                    MessageBox.Show("Instructor ID must be a whole number.");
+                    return;
+                }
+
+                if (!int.TryParse(AssignmentOfferingIdTextBox.Text, out newOfferingId))
+                {
+                    MessageBox.Show("Offering ID must be a whole number.");
+                    return;
+                }
+
+                if (!InstructorTable.InstructorIds.Contains(newInstructorId))
+                {
+                    MessageBox.Show("Instructor ID does not exist in the Instructors table.");
+                    return;
+                }
+
+                if (!CourseOfferingTable.OfferingIds.Contains(newOfferingId))
+                {
+                    MessageBox.Show("Offering ID does not exist in the CourseOfferings table.");
+                    return;
+                }
+
+                // If changing keys, make sure new pair isn't already taken
+                DataRow duplicate = db.InstructorAssignmentTable.Rows.Find(
+                    new object[] { newInstructorId, newOfferingId });
+
+                if (duplicate != null && !ReferenceEquals(duplicate, selectedRowView.Row))
+                {
+                    MessageBox.Show("Another assignment already uses that instructor/offering pair.");
+                    return;
+                }
+
+                // Apply changes directly to the selected DataRow
+                selectedRowView["instructorId"] = newInstructorId;
+                selectedRowView["offeringId"] = newOfferingId;
+
+                LoadInstructorAssignmentGrid();
+                ClearInstructorAssignmentForm();
+
+                MessageBox.Show("Instructor assignment updated.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating instructor assignment: {ex.Message}");
+            }
+        }
+        private void DeleteInstructorAssignmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int instructorId;
+                int offeringId;
+
+                if (!int.TryParse(AssignmentInstructorIdTextBox.Text, out instructorId))
+                {
+                    MessageBox.Show("Select an assignment or enter a valid Instructor ID.");
+                    return;
+                }
+
+                if (!int.TryParse(AssignmentOfferingIdTextBox.Text, out offeringId))
+                {
+                    MessageBox.Show("Select an assignment or enter a valid Offering ID.");
+                    return;
+                }
+
+                DataRow existing = db.InstructorAssignmentTable.Rows.Find(
+                    new object[] { instructorId, offeringId });
+
+                if (existing == null)
+                {
+                    MessageBox.Show("Instructor assignment not found.");
+                    return;
+                }
+
+                var confirm = MessageBox.Show(
+                    $"Delete assignment for instructor {instructorId} on offering {offeringId}?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (confirm != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                db.InstructorAssignmentTable.Rows.Remove(existing);
+
+                LoadInstructorAssignmentGrid();
+                ClearInstructorAssignmentForm();
+
+                MessageBox.Show("Instructor assignment deleted.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting instructor assignment: {ex.Message}");
+            }
+        }
+        private void ClearInstructorAssignmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearInstructorAssignmentForm();
+        }
+
+        private void RefreshInstructorAssignmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadInstructorAssignmentGrid();
+        }
+        #endregion
+
     }
 }

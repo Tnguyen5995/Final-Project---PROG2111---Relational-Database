@@ -227,6 +227,529 @@
                 </Grid>
             </TabItem>
 
+            <!-- COURSES TAB -->
+            <TabItem Header="Courses">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <!-- Top: DataGrid -->
+                        <RowDefinition Height="2*"/>
+                        <!-- Middle: separator -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Bottom: form + buttons -->
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- COURSES GRID (top – same style as Students/Programs) -->
+                    <DataGrid x:Name="dgCourses"
+                  Grid.Row="0"
+                  AutoGenerateColumns="True"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  Margin="0,0,0,5"
+                  SelectionChanged="dgCourses_SelectionChanged" />
+
+                    <Separator Grid.Row="1" Margin="0,5"/>
+
+                    <!-- BOTTOM: form (left) + actions (right) -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- COURSE DETAILS FORM (left) -->
+                        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,0,10,0">
+                            <TextBlock Text="Course Details"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <UniformGrid Columns="2" Rows="4" Margin="0,0,0,5">
+                                <TextBlock Text="Course ID:" Margin="0,0,5,0"/>
+                                <TextBox x:Name="txtCourseId" />
+
+                                <TextBlock Text="Course Title:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="txtCourseTitle" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Description:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="txtCourseDescription" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Course Hours:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="txtCourseHours" Margin="0,5,0,0"/>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <!-- ACTION BUTTONS (right) -->
+                        <StackPanel Grid.Column="1"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
+                            <TextBlock Text="Actions"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <Button x:Name="btnCourseCreate"
+                        Content="Add New Course"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="btnCourseCreate_Click"/>
+
+                            <Button x:Name="btnCourseUpdate"
+                        Content="Update Selected Course"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="btnCourseUpdate_Click"/>
+
+                            <Button x:Name="btnCourseDelete"
+                        Content="Delete Selected Course"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="btnCourseDelete_Click"/>
+
+                            <Button x:Name="btnCourseClear"
+                        Content="Clear Form"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="btnCourseClear_Click"/>
+
+                            <Button x:Name="btnCourseRefresh"
+                        Content="Refresh List"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="btnCourseRefresh_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- PROGRAM-COURSES TAB -->
+            <TabItem Header="Program Courses">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- GRID -->
+                    <DataGrid x:Name="ProgramCourseDataGrid"
+                  Grid.Row="0"
+                  AutoGenerateColumns="True"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  Margin="0,0,0,5"
+                  SelectionChanged="ProgramCourseDataGrid_SelectionChanged" />
+
+                    <Separator Grid.Row="1" Margin="0,5"/>
+
+                    <!-- DETAILS + ACTIONS -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- DETAILS -->
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="Program–Course Mapping"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+                            <UniformGrid Columns="2" Rows="2">
+                                <TextBlock Text="Program ID:" Margin="0,0,5,0"/>
+                                <TextBox x:Name="ProgramCourseProgramIdTextBox"/>
+
+                                <TextBlock Text="Course ID:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="ProgramCourseCourseIdTextBox" Margin="0,5,0,0"/>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <!-- ACTIONS -->
+                        <StackPanel Grid.Column="1"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
+                            <TextBlock Text="Actions"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <Button Content="Add Mapping"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="AddProgramCourseButton_Click"/>
+                            <Button Content="Delete Mapping"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="DeleteProgramCourseButton_Click"/>
+                            <Button Content="Clear Form"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="ClearProgramCourseButton_Click"/>
+                            <Button Content="Refresh List"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="RefreshProgramCourseButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- INSTRUCTORS TAB -->
+            <TabItem Header="Instructors">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- GRID -->
+                    <DataGrid x:Name="InstructorDataGrid"
+                  Grid.Row="0"
+                  AutoGenerateColumns="True"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  Margin="0,0,0,5"
+                  SelectionChanged="InstructorDataGrid_SelectionChanged" />
+
+                    <Separator Grid.Row="1" Margin="0,5"/>
+
+                    <!-- DETAILS + ACTIONS -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- DETAILS -->
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="Instructor Details"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <UniformGrid Columns="2" Rows="5">
+                                <TextBlock Text="Instructor ID:" Margin="0,0,5,0"/>
+                                <TextBox x:Name="InstructorIdTextBox"/>
+
+                                <TextBlock Text="First Name:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="InstructorFirstNameTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Last Name:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="InstructorLastNameTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Email:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="InstructorEmailTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Hire Date:" Margin="0,5,5,0"/>
+                                <DatePicker x:Name="InstructorHireDatePicker" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Office Location:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="InstructorOfficeTextBox" Margin="0,5,0,0"/>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <!-- ACTIONS -->
+                        <StackPanel Grid.Column="1"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
+                            <TextBlock Text="Actions"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <Button Content="Add New Instructor"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="AddInstructorButton_Click"/>
+                            <Button Content="Update Selected Instructor"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="UpdateInstructorButton_Click"/>
+                            <Button Content="Delete Selected Instructor"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="DeleteInstructorButton_Click"/>
+                            <Button Content="Clear Form"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="ClearInstructorButton_Click"/>
+                            <Button Content="Refresh List"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="RefreshInstructorButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- COURSE OFFERINGS TAB -->
+            <TabItem Header="Course Offerings">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- GRID -->
+                    <DataGrid x:Name="CourseOfferingDataGrid"
+                  Grid.Row="0"
+                  AutoGenerateColumns="True"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  Margin="0,0,0,5"
+                  SelectionChanged="CourseOfferingDataGrid_SelectionChanged" />
+
+                    <Separator Grid.Row="1" Margin="0,5"/>
+
+                    <!-- DETAILS + ACTIONS -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- DETAILS -->
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="Course Offering Details"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <UniformGrid Columns="2" Rows="5">
+                                <TextBlock Text="Offering ID:" Margin="0,0,5,0"/>
+                                <TextBox x:Name="OfferingIdTextBox"/>
+
+                                <TextBlock Text="Course ID:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="OfferingCourseIdTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Term Start:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="OfferingTermStartTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Term End:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="OfferingTermEndTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Academic Year:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="OfferingAcademicYearTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Schedule Info:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="OfferingScheduleInfoTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Selection Code:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="OfferingSelectionCodeTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Delivery Mode:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="OfferingDeliveryModeTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Max Capacity:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="OfferingMaxCapacityTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Room Location:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="OfferingRoomLocationTextBox" Margin="0,5,0,0"/>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <!-- ACTIONS -->
+                        <StackPanel Grid.Column="1"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
+                            <TextBlock Text="Actions"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <Button Content="Add New Offering"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="AddCourseOfferingButton_Click"/>
+                            <Button Content="Update Selected Offering"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="UpdateCourseOfferingButton_Click"/>
+                            <Button Content="Delete Selected Offering"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="DeleteCourseOfferingButton_Click"/>
+                            <Button Content="Clear Form"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="ClearCourseOfferingButton_Click"/>
+                            <Button Content="Refresh List"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="RefreshCourseOfferingButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- ENROLLMENTS TAB -->
+            <TabItem Header="Enrollments">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- GRID -->
+                    <DataGrid x:Name="CourseEnrollmentDataGrid"
+                  Grid.Row="0"
+                  AutoGenerateColumns="True"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  Margin="0,0,0,5"
+                  SelectionChanged="CourseEnrollmentDataGrid_SelectionChanged" />
+
+                    <Separator Grid.Row="1" Margin="0,5"/>
+
+                    <!-- DETAILS + ACTIONS -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- DETAILS -->
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="Course Enrollment Details"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <UniformGrid Columns="2" Rows="4">
+                                <TextBlock Text="Student ID:" Margin="0,0,5,0"/>
+                                <TextBox x:Name="EnrollmentStudentIdTextBox"/>
+
+                                <TextBlock Text="Offering ID:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="EnrollmentOfferingIdTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Status:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="EnrollmentStatusTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Final Grade:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="EnrollmentFinalGradeTextBox" Margin="0,5,0,0"/>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <!-- ACTIONS -->
+                        <StackPanel Grid.Column="1"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
+                            <TextBlock Text="Actions"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <Button Content="Add New Enrollment"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="AddCourseEnrollmentButton_Click"/>
+                            <Button Content="Update Selected Enrollment"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="UpdateCourseEnrollmentButton_Click"/>
+                            <Button Content="Delete Selected Enrollment"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="DeleteCourseEnrollmentButton_Click"/>
+                            <Button Content="Clear Form"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="ClearCourseEnrollmentButton_Click"/>
+                            <Button Content="Refresh List"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="RefreshCourseEnrollmentButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- INSTRUCTOR ASSIGNMENTS TAB -->
+            <TabItem Header="Instructor Assignments">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- GRID -->
+                    <DataGrid x:Name="InstructorAssignmentDataGrid"
+                  Grid.Row="0"
+                  AutoGenerateColumns="True"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  Margin="0,0,0,5"
+                  SelectionChanged="InstructorAssignmentDataGrid_SelectionChanged" />
+
+                    <Separator Grid.Row="1" Margin="0,5"/>
+
+                    <!-- DETAILS + ACTIONS -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- DETAILS -->
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="Instructor Assignment Details"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <UniformGrid Columns="2" Rows="2">
+                                <TextBlock Text="Instructor ID:" Margin="0,0,5,0"/>
+                                <TextBox x:Name="AssignmentInstructorIdTextBox"/>
+
+                                <TextBlock Text="Offering ID:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="AssignmentOfferingIdTextBox" Margin="0,5,0,0"/>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <!-- ACTIONS -->
+                        <StackPanel Grid.Column="1"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
+                            <TextBlock Text="Actions"
+                           FontWeight="Bold"
+                           Margin="0,0,0,5"/>
+
+                            <Button Content="Add Assignment"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="AddInstructorAssignmentButton_Click"/>
+                            <Button Content="Delete Assignment"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="DeleteInstructorAssignmentButton_Click"/>
+                            <Button Content="Clear Form"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="ClearInstructorAssignmentButton_Click"/>
+                            <Button Content="Refresh List"
+                        Margin="0,0,0,5"
+                        Height="30"
+                        Click="RefreshInstructorAssignmentButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+
+
+
+
+
+
+
+
         </TabControl>
     </Grid>
 </Window>
