@@ -1,391 +1,232 @@
 ﻿<Window x:Class="PROG2111_FinalPhase5.MainWindow"
-		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:local="clr-namespace:PROG2111_FinalPhase5"
-		mc:Ignorable="d"
-		Title="MainWindow" Height="600" Width="900">
-	<Grid>
-		<TabControl>
-			<TabItem Header="Create">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition/>
-						<RowDefinition Height="15*"/>
-					</Grid.RowDefinitions>
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CourseRegPro – Admin Console"
+        Height="650"
+        Width="1000"
+        WindowStartupLocation="CenterScreen">
 
-					<ComboBox Name="createComboBox" SelectionChanged="createComboBox_SelectionChanged">
-						<ComboBoxItem Name="createCbiStudentTable" Content="Student Table"/>
-						<ComboBoxItem Name="createCbiProgramTable" Content="Program Table"/>
-						<ComboBoxItem Name="createCbiProgramCourseTable" Content="Program Course Table"/>
-						<ComboBoxItem Name="createCbiCourseTable" Content="Course Table"/>
-						<ComboBoxItem Name="createCbiCourseOfferingTable" Content="Course Offering Table"/>
-						<ComboBoxItem Name="createCbiCourseEnrollmentTable" Content="Course Enrollment Table"/>
-						<ComboBoxItem Name="createCbiInstructorTable" Content="Instructor Table"/>
-						<ComboBoxItem Name="createCbiInstructorAssignmentTable" Content="Instructor Assignment Table"/>
-					</ComboBox>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-					<!--student grid-->
-					<Grid Grid.Row="1" Name="createStudentGrid" Visibility="Hidden">
-						<Grid.RowDefinitions>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-						</Grid.RowDefinitions>
-						<!--id-->
-						<StackPanel Grid.Row="0">
-							<Label Content="studentID" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateStudentID"/>
-						</StackPanel>
-						<!--programID-->
-						<StackPanel Grid.Row="1">
-							<Label Content="programID" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateStudentProgramID"/>
-						</StackPanel>
-						<!--first name-->
-						<StackPanel Grid.Row="2">
-							<Label Content="studentFirstName" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateStudentFirstName"/>
-						</StackPanel>
-						<!--last name-->
-						<StackPanel Grid.Row="3">
-							<Label Content="studentLastName" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateStudentLastName"/>
-						</StackPanel>
-						<!--email-->
-						<StackPanel Grid.Row="4">
-							<Label Content="studentEmail" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateStudentEmail"/>
-						</StackPanel>
-						<!--date of birth-->
-						<StackPanel Grid.Row="5">
-							<Label Content="studentDateOfBirth(dd/mm/yyyy)" HorizontalAlignment="Center"/>
-							<DatePicker Width="300" Name="dateCreateStudentDateOfBirth"/>
-						</StackPanel>
-						<!--enrollment date-->
-						<StackPanel Grid.Row="6">
-							<Label Content="studentDateEnrolled(dd/mm/yyyy)" HorizontalAlignment="Center"/>
-							<DatePicker Width="300" Name="dateCreateStudentDateEnrolled"/>
-						</StackPanel>
-						<Button Grid.Row="7" Margin="300, 5" Name="btnStudentSubmit" Content="Submit" Click="btnCreateStudentSubmit_Click"/>
-					</Grid>
+        <!-- Header -->
+        <TextBlock Grid.Row="0"
+                   Text="Course Registration Manager"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Margin="0,0,0,10"/>
 
+        <!-- Main content -->
+        <TabControl Grid.Row="1">
+            <!-- STUDENTS TAB -->
+            <TabItem Header="Students">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <!-- Data grid -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Separator -->
+                        <RowDefinition Height="3*"/>
+                        <!-- Form + buttons -->
+                    </Grid.RowDefinitions>
 
-					<!--Program Grid-->
-					<Grid Grid.Row="1" Name="createProgramGrid" Visibility="Hidden">
-						<Grid.RowDefinitions>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-						</Grid.RowDefinitions>
-						<!--id-->
-						<StackPanel Grid.Row="0">
-							<Label Content="programID" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateProgramID"/>
-						</StackPanel>
-						<!--program name-->
-						<StackPanel Grid.Row="1">
-							<Label Content="programName" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateProgramName"/>
-						</StackPanel>
-						<!--credential-->
-						<StackPanel Grid.Row="2">
-							<Label Content="programCredential" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateProgramCredential"/>
-						</StackPanel>
-						<!--Duration-->
-						<StackPanel Grid.Row="3">
-							<Label Content="programDurationInTerms" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateProgramDuration"/>
-						</StackPanel>
-						<!--isAvalible-->
-						<StackPanel Grid.Row="4">
-							<Label Content="programAvalibility" HorizontalAlignment="Center"/>
-							<CheckBox Name="chkCreateProgramAvaliblility" HorizontalAlignment="Center" IsChecked="True"/>
-						</StackPanel>
-						<Button Grid.Row="5" Margin="300, 5" Name="btnCreateProgramSubmit" Content="Submit" Click="btnCreateProgramSubmit_Click"/>
-					</Grid>
+                    <!-- STUDENT GRID -->
+                    <DataGrid x:Name="StudentDataGrid"
+                              Grid.Row="0"
+                              AutoGenerateColumns="True"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              Margin="0,0,0,5"
+                              SelectionChanged="StudentDataGrid_SelectionChanged" />
 
-					<!--Course Grid-->
-					<Grid Grid.Row="1" Name="createCourseGrid" Visibility="Hidden">
-						<Grid.RowDefinitions>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-						</Grid.RowDefinitions>
-						<!--id-->
-						<StackPanel Grid.Row="0">
-							<Label Content="courseID" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateCourseID"/>
-						</StackPanel>
-						<!--program name-->
-						<StackPanel Grid.Row="1">
-							<Label Content="courseName" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateCourseTitle"/>
-						</StackPanel>
-						<!--credential-->
-						<StackPanel Grid.Row="2">
-							<Label Content="courseDescription" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateCourseDescription"/>
-						</StackPanel>
-						<!--Duration-->
-						<StackPanel Grid.Row="3">
-							<Label Content="courseHours" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateCourseHours"/>
-						</StackPanel>
-						<Button Grid.Row="4" Margin="300, 5" Name="btnCreateCourseSubmit" Content="Submit" Click="btnCreateCourseSubmit_Click"/>
-					</Grid>
-					<!--Program Course Grid-->
-					<Grid Grid.Row="1" Name="createProgramCourseGrid" Visibility="Hidden">
-						<Grid.RowDefinitions>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-						</Grid.RowDefinitions>
-						<!--program id-->
-						<StackPanel Grid.Row="0">
-							<Label Content="programID" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateProgramCourseProgramID"/>
-						</StackPanel>
-						<!--program id-->
-						<StackPanel Grid.Row="1">
-							<Label Content="courseID" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateProgramCourseCourseID"/>
-						</StackPanel>
-						
-						<Button Grid.Row="2" Margin="300, 5" Name="btnCreateProgramCourseSubmit" Content="Submit" Click="btnCreateProgramCourseSubmit_Click"/>
-					</Grid>
-					
-					<!-- instructor grid -->
-					<Grid Grid.Row="1" Name="createInstructorGrid" Visibility="Hidden">
-						<Grid.RowDefinitions>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-						</Grid.RowDefinitions>
+                    <Separator Grid.Row="1" Margin="0,5"/>
 
-						<!-- InstructorID -->
-						<StackPanel Grid.Row="0">
-							<Label Content="instructorID" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateInstructorID"/>
-						</StackPanel>
+                    <!-- STUDENT FORM + BUTTONS -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
 
-						<!-- First Name -->
-						<StackPanel Grid.Row="1">
-							<Label Content="instructorFirstName" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateInstructorFirstName"/>
-						</StackPanel>
+                        <!-- FORM -->
+                        <StackPanel Grid.Column="0"
+                                    Orientation="Vertical"
+                                    Margin="0,0,10,0">
+                            <TextBlock Text="Student Details"
+                                       FontWeight="Bold"
+                                       Margin="0,0,0,5"/>
 
-						<!-- Last Name -->
-						<StackPanel Grid.Row="2">
-							<Label Content="instructorLastName" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateInstructorLastName"/>
-						</StackPanel>
+                            <UniformGrid Columns="2" Rows="4" Margin="0,0,0,5">
+                                <TextBlock Text="Student ID:" Margin="0,0,5,0"/>
+                                <TextBox x:Name="StudentIdTextBox"
+                                         IsReadOnly="True"
+                                         ToolTip="Auto-generated by database on insert"/>
 
-						<!-- Email -->
-						<StackPanel Grid.Row="3">
-							<Label Content="instructorEmail" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateInstructorEmail"/>
-						</StackPanel>
+                                <TextBlock Text="Program ID:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="StudentProgramIdTextBox" Margin="0,5,0,0"/>
 
-						<!-- Hire Date -->
-						<StackPanel Grid.Row="4">
-							<Label Content="instructorHireDate (dd/mm/yyyy)" HorizontalAlignment="Center"/>
-							<DatePicker Width="300" Name="dateCreateInstructorHireDate"/>
-						</StackPanel>
+                                <TextBlock Text="First Name:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="StudentFirstNameTextBox" Margin="0,5,0,0"/>
 
-						<!-- Office Location -->
-						<StackPanel Grid.Row="5">
-							<Label Content="instructorOfficeLocation" HorizontalAlignment="Center"/>
-							<TextBox Width="300" Name="txtCreateInstructorOfficeLocation"/>
-						</StackPanel>
+                                <TextBlock Text="Last Name:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="StudentLastNameTextBox" Margin="0,5,0,0"/>
 
-						<!-- Submit Button -->
-						<Button Grid.Row="6" Margin="300,5" Name="btnInstructorSubmit" Content="Submit" Click="btnCreateInstructorSubmit_Click"/>
-					</Grid>
-					
-					<!-- course offering grid -->
-					<Grid Grid.Row="1" Name="createCourseOfferingGrid" Visibility="Hidden">
-						<Grid.RowDefinitions>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-							<RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-							<RowDefinition/>
-						</Grid.RowDefinitions>
+                                <TextBlock Text="Email:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="StudentEmailTextBox" Margin="0,5,0,0"/>
 
-						<!-- offering -->
-                        <StackPanel Grid.Row="0">
-                            <Label Content="offeringID" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingID"/>
-                        </StackPanel>
-						<!-- courseID -->
-                        <StackPanel Grid.Row="1">
-                            <Label Content="courseID" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingCourseID"/>
-                        </StackPanel>
-                        <!-- termStart -->
-                        <StackPanel Grid.Row="3">
-                            <Label Content="termStart" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingTermStart"/>
-                        </StackPanel>
-						<!-- termEnd -->
-                        <StackPanel Grid.Row="4">
-                            <Label Content="termEnd" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingTermEnd"/>
-                        </StackPanel>
-						<!-- acedemicYear -->
-                        <StackPanel Grid.Row="5">
-                            <Label Content="acedemicYear" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingAcedemicYear"/>
-                        </StackPanel>
-						<!-- scheduleInfo -->
-                        <StackPanel Grid.Row="6">
-                            <Label Content="scheduleInfo" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingScheduleInfo"/>
-                        </StackPanel>
-						<!-- selectionCode -->
-                        <StackPanel Grid.Row="7">
-                            <Label Content="selectionCode" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingSelectionCode"/>
-                        </StackPanel>
-						<!-- deviveryMode -->
-                        <StackPanel Grid.Row="8">
-                            <Label Content="deliveryMode" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingDeliveryMode"/>
-                        </StackPanel>
-						<!-- maxCapacity -->
-                        <StackPanel Grid.Row="9">
-                            <Label Content="maxCapacity" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingMaxCapacity"/>
-                        </StackPanel>
-						<!-- roomLocation -->
-                        <StackPanel Grid.Row="10">
-                            <Label Content="roomLocation" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCourseOfferingRoomLocation"/>
+                                <TextBlock Text="Date of Birth:" Margin="0,5,5,0"/>
+                                <DatePicker x:Name="StudentDobDatePicker" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Date Enrolled:" Margin="0,5,5,0"/>
+                                <DatePicker x:Name="StudentEnrolledDatePicker" Margin="0,5,0,0"/>
+                            </UniformGrid>
                         </StackPanel>
 
-                        <!-- Submit Button -->
-						<Button Grid.Row="11" Margin="300,5" Name="btnCourseOfferingSubmit" Content="Submit" Click="btnCourseOfferingSubmit_Click"/>
-					</Grid>
-                    
-                    <!--course enrollment grid-->
-                    <Grid Grid.Row="1" Name="createCourseEnrollmentGrid" Visibility="Hidden">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <!--studentId-->
-                        <StackPanel Grid.Row="0">
-                            <Label Content="studentID" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCreateCourseEnrollmentStudentID"/>
-                        </StackPanel>
-                        <!--courseOfferingId-->
-                        <StackPanel Grid.Row="1">
-                            <Label Content="courseOfferingID" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCreateCourseEnrollmentOfferingID"/>
-                        </StackPanel>
-                        <!--enrollmentStatus-->
-                        <StackPanel Grid.Row="2">
-                            <Label Content="enrollmentStatus" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCreateCourseEnrollmentEnrollmentStatus"/>
-                        </StackPanel>
-                        <!--finalGrade-->
-                        <StackPanel Grid.Row="3">
-                            <Label Content="finalGrade" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCreateCourseEnrollmentFinalGrade"/>
-                        </StackPanel>
-                        <Button Grid.Row="4" Margin="300, 5" Name="btnCourseEnrollmentSubmit" Content="Submit" Click="btnCourseEnrollmentSubmit_Click"/>
-                    </Grid>
-                    
-                    <!--instructor assignment Grid-->
-                    <Grid Grid.Row="1" Name="createInstructorAssignmentGrid" Visibility="Hidden">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <!--instructor id-->
-                        <StackPanel Grid.Row="0">
-                            <Label Content="instructorID" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCreateInstructorAssignmentInstructorID"/>
-                        </StackPanel>
-                        <!--program id-->
-                        <StackPanel Grid.Row="1">
-                            <Label Content="offeringID" HorizontalAlignment="Center"/>
-                            <TextBox Width="300" Name="txtCreateInstructorAssignmentOfferingID"/>
-                        </StackPanel>
+                        <!-- STUDENT BUTTONS -->
+                        <StackPanel Grid.Column="1"
+                                    Orientation="Vertical"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                            <TextBlock Text="Actions"
+                                       FontWeight="Bold"
+                                       Margin="0,0,0,5"/>
 
-                        <Button Grid.Row="2" Margin="300, 5" Name="btnCreateInstructorAssignmentSubmit" Content="Submit" Click="btnCreateInstructorAssignmentSubmit_Click"/>
+                            <Button x:Name="AddStudentButton"
+                                    Content="Add New Student"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="AddStudentButton_Click"/>
+
+                            <Button x:Name="UpdateStudentButton"
+                                    Content="Update Selected Student"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="UpdateStudentButton_Click"/>
+
+                            <Button x:Name="DeleteStudentButton"
+                                    Content="Delete Selected Student"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="DeleteStudentButton_Click"/>
+
+                            <Button x:Name="ClearStudentButton"
+                                    Content="Clear Form"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="ClearStudentButton_Click"/>
+
+                            <Button x:Name="RefreshStudentButton"
+                                    Content="Refresh List"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="RefreshStudentButton_Click"/>
+                        </StackPanel>
                     </Grid>
                 </Grid>
-			</TabItem>
-			<TabItem Header="Read">
+            </TabItem>
 
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition/>
-						<RowDefinition Height="15*"/>
-					</Grid.RowDefinitions>
+            <!-- PROGRAMS TAB -->
+            <TabItem Header="Programs">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
 
-					<ComboBox Name="readComboBox" SelectionChanged="readComboBox_SelectionChanged">
-						<ComboBoxItem Name="readCbiStudentTable" Content="Student Table"/>
-						<ComboBoxItem Name="readCbiProgramTable" Content="Program Table"/>
-						<ComboBoxItem Name="readCbiProgramCourseTable" Content="Program Course Table"/>
-						<ComboBoxItem Name="readCbiCourseTable" Content="Course Table"/>
-						<ComboBoxItem Name="readCbiCourseOfferingTable" Content="Course Offering Table"/>
-						<ComboBoxItem Name="readCbiCourseEnrollmentTable" Content="Course Enrollment Table"/>
-						<ComboBoxItem Name="readCbiInstructorTable" Content="Instructor Table"/>
-						<ComboBoxItem Name="readCbiInstructorAssignmentTable" Content="Instructor Assignment Table"/>
-					</ComboBox>
+                    <!-- PROGRAM GRID -->
+                    <DataGrid x:Name="ProgramDataGrid"
+                              Grid.Row="0"
+                              AutoGenerateColumns="True"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              Margin="0,0,0,5"
+                              SelectionChanged="ProgramDataGrid_SelectionChanged" />
 
-					<!--grids-->
-					<DataGrid Name="readStudentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readProgramDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readProgramCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readInstructorDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readCourseOfferingDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readCourseEnrollmentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readInstructorAssignmentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+                    <Separator Grid.Row="1" Margin="0,5"/>
 
+                    <!-- PROGRAM FORM + BUTTONS -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
 
+                        <!-- FORM -->
+                        <StackPanel Grid.Column="0"
+                                    Orientation="Vertical"
+                                    Margin="0,0,10,0">
+                            <TextBlock Text="Program Details"
+                                       FontWeight="Bold"
+                                       Margin="0,0,0,5"/>
 
-				</Grid>
-			</TabItem>
-			<TabItem Header="Update">
-				
-			</TabItem>
-			<TabItem Header="Delete">
-				
-			</TabItem>
-			<TabItem Header="Fill Tables">
-				<Button Content="FILL" Margin="10" FontSize="100" Name="btnFillTables" Click="btnFillTables_Click"/>
-			</TabItem>
-		</TabControl>
-	</Grid>
+                            <UniformGrid Columns="2" Rows="3" Margin="0,0,0,5">
+                                <TextBlock Text="Program ID:" Margin="0,0,5,0"/>
+                                <TextBox x:Name="ProgramIdTextBox"/>
+
+                                <TextBlock Text="Program Name:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="ProgramNameTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Credential Type:" Margin="0,5,5,0"/>
+                                <TextBox x:Name="ProgramCredentialTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Duration (terms):" Margin="0,5,5,0"/>
+                                <TextBox x:Name="ProgramDurationTextBox" Margin="0,5,0,0"/>
+
+                                <TextBlock Text="Is Available:" Margin="0,5,5,0"/>
+                                <CheckBox x:Name="ProgramIsAvailableCheckBox"
+                                          Margin="0,5,0,0"/>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <!-- PROGRAM BUTTONS -->
+                        <StackPanel Grid.Column="1"
+                                    Orientation="Vertical"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                            <TextBlock Text="Actions"
+                                       FontWeight="Bold"
+                                       Margin="0,0,0,5"/>
+
+                            <Button x:Name="AddProgramButton"
+                                    Content="Add New Program"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="AddProgramButton_Click"/>
+
+                            <Button x:Name="UpdateProgramButton"
+                                    Content="Update Selected Program"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="UpdateProgramButton_Click"/>
+
+                            <Button x:Name="DeleteProgramButton"
+                                    Content="Delete Selected Program"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="DeleteProgramButton_Click"/>
+
+                            <Button x:Name="ClearProgramButton"
+                                    Content="Clear Form"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="ClearProgramButton_Click"/>
+
+                            <Button x:Name="RefreshProgramButton"
+                                    Content="Refresh List"
+                                    Margin="0,0,0,5"
+                                    Height="30"
+                                    Click="RefreshProgramButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
 </Window>

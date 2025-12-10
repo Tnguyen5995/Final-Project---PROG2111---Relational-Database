@@ -1,217 +1,398 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PROG2111_FinalPhase5
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    /*
+     * FILE         : MainWindow.xaml.cs
+     * PROJECT      : PROG2111_FinalPhase5
+     * PROGRAMMER   : George Shapka, Tuan Thanh Nguyen
+     * FIRST VERSION: 12/10/2025
+     * DESCRIPTION  : WPF UI for managing Students and Programs with full CRUD.
+     */
+
     public partial class MainWindow : Window
     {
-        private static readonly string ComboBoxString = "System.Windows.Controls.ComboBoxItem: ";
-        private readonly Database db = new Database();
+        // Repositories for DB access
+        private readonly StudentRepository _studentRepository;
+        private readonly ProgramRepository _programRepository;
 
         public MainWindow()
         {
             InitializeComponent();
-            RefreshReadGrids();
+
+            _studentRepository = new StudentRepository();
+            _programRepository = new ProgramRepository();
+
+            LoadStudents();
+            LoadPrograms();
         }
 
-        /// <summary>
-        /// Reloads data from the database and binds to the read grids.
-        /// </summary>
-        private void RefreshReadGrids()
+        #region STUDENT HELPERS
+
+        private void LoadStudents()
         {
-            db.RefreshProgramTable();
-            db.RefreshStudentTable();
-
-            readProgramDataGrid.ItemsSource = db.programTable.DefaultView;
-            readStudentDataGrid.ItemsSource = db.studentTable.DefaultView;
-
-            // other read grids for courseTable, programCourseTable, etc.
-            readCourseDataGrid.ItemsSource = db.courseTable.DefaultView;
-            readProgramCourseDataGrid.ItemsSource = db.programCourseTable.DefaultView;
-            readInstructorDataGrid.ItemsSource = db.instructorTable.DefaultView;
-            readCourseOfferingDataGrid.ItemsSource = db.CourseOfferingTable.DefaultView;
-            readCourseEnrollmentDataGrid.ItemsSource = db.CourseEnrollmentTable.DefaultView;
-        }
-
-        /// <summary>
-        /// makes all table editors invisible
-        /// </summary>
-        private void SetAllTablesInvisible()
-        {
-            createStudentGrid.Visibility = Visibility.Hidden;
-            createProgramGrid.Visibility = Visibility.Hidden;
-            createCourseGrid.Visibility = Visibility.Hidden;
-            createProgramCourseGrid.Visibility = Visibility.Hidden;
-            createInstructorGrid.Visibility = Visibility.Hidden;
-            createCourseOfferingGrid.Visibility = Visibility.Hidden;
-            createCourseEnrollmentGrid.Visibility = Visibility.Hidden;
-            createInstructorAssignmentGrid.Visibility = Visibility.Hidden;
-
-            readStudentDataGrid.Visibility = Visibility.Hidden;
-            readProgramDataGrid.Visibility = Visibility.Hidden;
-            readCourseDataGrid.Visibility = Visibility.Hidden;
-            readProgramCourseDataGrid.Visibility = Visibility.Hidden;
-            readInstructorDataGrid.Visibility = Visibility.Hidden;
-            readCourseOfferingDataGrid.Visibility = Visibility.Hidden;
-            readCourseEnrollmentDataGrid.Visibility = Visibility.Hidden;
-            readInstructorAssignmentDataGrid.Visibility = Visibility.Hidden;
-            readStudentDataGrid.Visibility = Visibility.Hidden;
-            readProgramDataGrid.Visibility = Visibility.Hidden;
-        }
-
-        private void btnFillTables_Click(object sender, RoutedEventArgs e)
-        {
-            //disable to not allow overlapping entries
-            btnFillTables.IsEnabled = false;
-
-            //add programs (id, name, credential, duration, avalible)
-            db.programTable.Rows.Add(1, "SET", "adv Diploma", 6, true);
-            db.programTable.Rows.Add(2, "mEng", "degree", 8, false);
-            db.programTable.Rows.Add(3, "writing", "certificate", 2, true);
-
-            ProgramTable.ProgramIds.Add(1);
-            ProgramTable.ProgramIds.Add(2);
-            ProgramTable.ProgramIds.Add(3);
-
-            //add students (id, program id, fName, lName, email, dob, enrollment date)
-            db.studentTable.Rows.Add(1, 1, "Fred", "Smith", "Fred@mail.ca", new DateTime(2001, 5, 12), new DateTime(2025, 9, 1));
-            db.studentTable.Rows.Add(2, 3, "john", "apple", "applej@mail.ca", new DateTime(1991, 4, 22), new DateTime(2025, 9, 1));
-
-            StudentTable.StudentIds.Add(1);
-            StudentTable.StudentIds.Add(2);
-
-            //add course (id, title, desc, hours)
-            db.courseTable.Rows.Add(1, "math", "calculashiunms", 50);
-            db.courseTable.Rows.Add(2, "c++", "mcdonalds prep", 86);
-            db.courseTable.Rows.Add(3, "zombies???", "goofy ahh class", 54);
-
-            CourseTable.CourseIds.Add(1);
-            CourseTable.CourseIds.Add(2);
-            CourseTable.CourseIds.Add(3);
-
-            //add program course (program id, course id)
-            db.programCourseTable.Rows.Add(1, 2);
-            db.programCourseTable.Rows.Add(2, 1);
-            db.programCourseTable.Rows.Add(3, 3);
-
-            ProgramCourseTable.ProgramCourseKeys.Add(new int[] { 1, 2 });
-            ProgramCourseTable.ProgramCourseKeys.Add(new int[] { 2, 1 });
-            ProgramCourseTable.ProgramCourseKeys.Add(new int[] { 3, 3 });
-
-            //add instructors (instructor id, fName, lName, email, hire date, office location)
-            db.instructorTable.Rows.Add(1, "billy", "bob", "billy@mail.com", new DateTime(2020, 6, 8), "Waterloo");
-            db.instructorTable.Rows.Add(2, "john", "johnson", "jj@mail.com", new DateTime(2018, 8, 1), "cambridge");
-
-            InstructorTable.InstructorIds.Add(1);
-            InstructorTable.InstructorIds.Add(2);
-
-            //add course offering (offering id, course id, term start, term end, acedemic year, schedule info, selection code, delivery mode, max capacity, room location)
-            db.CourseOfferingTable.Rows.Add(1, 2, 1, 1, 2025, "idk", 3, "in person", 30, "12b14");
-            db.CourseOfferingTable.Rows.Add(2, 3, 2, 3, 2024, "idk", 1, "online", 50, "home");
-
-            CourseOfferingTable.OfferingIds.Add(1);
-            CourseOfferingTable.OfferingIds.Add(2);
-
-            //add courseEnrollment (student id, offering id, enrollmentStatus, finalGrade)
-            db.CourseEnrollmentTable.Rows.Add(1, 2, "enrolled", 0f);
-            db.CourseEnrollmentTable.Rows.Add(2, 1, "complete", 80.33f);
-
-            //add instructor assignment (instructor Id, offering Id)
-            db.InstructorAssignmentTable.Rows.Add(2, 2);
-            db.InstructorAssignmentTable.Rows.Add(1, 3);
             try
             {
-                // Example seed programs
-                ProgramModel program1 = new ProgramModel
-                {
-                    ProgramId = 1,
-                    ProgramName = "Math",
-                    CredentialType = "Diploma",
-                    DurationInTerms = 3,
-                    IsAvailable = true
-                };
-
-                ProgramModel program2 = new ProgramModel
-                {
-                    ProgramId = 2,
-                    ProgramName = "C++ Programming",
-                    CredentialType = "Certificate",
-                    DurationInTerms = 2,
-                    IsAvailable = false
-                };
-
-                db.InsertProgram(program1);
-                db.InsertProgram(program2);
-
-                // Example seed students
-                StudentModel student1 = new StudentModel
-                {
-                    StudentId = 1,
-                    ProgramId = 1,
-                    FirstName = "Fred",
-                    LastName = "Smith",
-                    EmailAddress = "fred@mail.ca",
-                    DateOfBirth = new DateTime(2001, 5, 12),
-                    DateEnrolled = new DateTime(2025, 9, 1)
-                };
-
-                StudentModel student2 = new StudentModel
-                {
-                    StudentId = 2,
-                    ProgramId = 2,
-                    FirstName = "John",
-                    LastName = "Apple",
-                    EmailAddress = "applej@mail.ca",
-                    DateOfBirth = new DateTime(1991, 4, 22),
-                    DateEnrolled = new DateTime(2025, 9, 1)
-                };
-
-                db.InsertStudent(student1);
-                db.InsertStudent(student2);
-
-                RefreshReadGrids();
-
-                MessageBox.Show("Sample data inserted into CourseRegProDB.", "Seed Data",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                DataTable students = _studentRepository.GetAllStudentsAsDataTable();
+                StudentDataGrid.ItemsSource = students.DefaultView;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error inserting sample data:\n" + ex.Message, "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error loading students: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
+        private void ClearStudentForm()
         {
-            // TODO: Add logic to handle student creation here
-            MessageBox.Show("Student Submit button clicked!");
+            StudentIdTextBox.Text = string.Empty;
+            StudentProgramIdTextBox.Text = string.Empty;
+            StudentFirstNameTextBox.Text = string.Empty;
+            StudentLastNameTextBox.Text = string.Empty;
+            StudentEmailTextBox.Text = string.Empty;
+            StudentDobDatePicker.SelectedDate = null;
+            StudentEnrolledDatePicker.SelectedDate = null;
         }
 
-        private void btnCreateProgramSubmit_Click(object sender, RoutedEventArgs e)
+        private StudentModel BuildStudentFromForm(bool requireId)
         {
-            // TODO: Add logic to handle the Program Submit button click
-            MessageBox.Show("Program Submit button clicked!");
+            if (requireId && string.IsNullOrWhiteSpace(StudentIdTextBox.Text))
+            {
+                throw new InvalidOperationException("Select a student first (Student ID is required).");
+            }
+
+            int programId;
+            if (!int.TryParse(StudentProgramIdTextBox.Text, out programId))
+            {
+                throw new InvalidOperationException("Program ID must be a valid integer.");
+            }
+
+            int studentId = 0;
+            if (requireId)
+            {
+                if (!int.TryParse(StudentIdTextBox.Text, out studentId))
+                {
+                    throw new InvalidOperationException("Student ID must be a valid integer.");
+                }
+            }
+
+            DateTime? dob = StudentDobDatePicker.SelectedDate;
+            DateTime? enrolled = StudentEnrolledDatePicker.SelectedDate ?? DateTime.Now;
+
+            var model = new StudentModel
+            {
+                ProgramId = programId,
+                FirstName = StudentFirstNameTextBox.Text?.Trim(),
+                LastName = StudentLastNameTextBox.Text?.Trim(),
+                EmailAddress = StudentEmailTextBox.Text?.Trim(),
+                DateOfBirth = dob,
+                DateEnrolled = enrolled ?? DateTime.Now
+            };
+
+            if (requireId)
+            {
+                model.StudentId = studentId;
+            }
+
+            return model;
         }
 
-        private void btnCreateInstructorAssignmentSubmit_Click(object sender, RoutedEventArgs e)
+        #endregion
+
+        #region STUDENT EVENTS
+
+        private void AddStudentButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Add logic to handle instructor assignment submission
-            MessageBox.Show("Instructor Assignment Submitted!");
+            try
+            {
+                // ID is auto-generated by DB on insert
+                StudentModel student = BuildStudentFromForm(requireId: false);
+                _studentRepository.InsertStudent(student);
+
+                MessageBox.Show("Student added successfully.",
+                                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                LoadStudents();
+                ClearStudentForm();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding student: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
+        private void UpdateStudentButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                StudentModel student = BuildStudentFromForm(requireId: true);
+                _studentRepository.UpdateStudent(student);
+
+                MessageBox.Show("Student updated successfully.",
+                                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                LoadStudents();
+                ClearStudentForm();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating student: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void DeleteStudentButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(StudentIdTextBox.Text))
+                {
+                    MessageBox.Show("Select a student to delete.",
+                                    "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                int studentId;
+                if (!int.TryParse(StudentIdTextBox.Text, out studentId))
+                {
+                    MessageBox.Show("Student ID is invalid.",
+                                    "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var result = MessageBox.Show($"Are you sure you want to delete student #{studentId}?",
+                                             "Confirm Delete",
+                                             MessageBoxButton.YesNo,
+                                             MessageBoxImage.Question);
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                _studentRepository.DeleteStudent(studentId);
+
+                MessageBox.Show("Student deleted successfully.",
+                                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                LoadStudents();
+                ClearStudentForm();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting student: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ClearStudentButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearStudentForm();
+        }
+
+        private void RefreshStudentButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadStudents();
+        }
+
+        private void StudentDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (StudentDataGrid.SelectedItem is DataRowView row)
+            {
+                StudentIdTextBox.Text = row["studentId"]?.ToString();
+                StudentProgramIdTextBox.Text = row["programId"]?.ToString();
+                StudentFirstNameTextBox.Text = row["firstName"]?.ToString();
+                StudentLastNameTextBox.Text = row["lastName"]?.ToString();
+                StudentEmailTextBox.Text = row["email"]?.ToString();
+
+                DateTime parsed;
+                if (DateTime.TryParse(row["dateOfBirth"]?.ToString(), out parsed))
+                {
+                    StudentDobDatePicker.SelectedDate = parsed;
+                }
+                else
+                {
+                    StudentDobDatePicker.SelectedDate = null;
+                }
+
+                if (DateTime.TryParse(row["dateEnrolled"]?.ToString(), out parsed))
+                {
+                    StudentEnrolledDatePicker.SelectedDate = parsed;
+                }
+                else
+                {
+                    StudentEnrolledDatePicker.SelectedDate = null;
+                }
+            }
+        }
+
+        #endregion
+
+        #region PROGRAM HELPERS
+
+        private void LoadPrograms()
+        {
+            try
+            {
+                DataTable programs = _programRepository.GetAllProgramsAsDataTable();
+                ProgramDataGrid.ItemsSource = programs.DefaultView;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading programs: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ClearProgramForm()
+        {
+            ProgramIdTextBox.Text = string.Empty;
+            ProgramNameTextBox.Text = string.Empty;
+            ProgramCredentialTextBox.Text = string.Empty;
+            ProgramDurationTextBox.Text = string.Empty;
+            ProgramIsAvailableCheckBox.IsChecked = false;
+        }
+
+        private ProgramModel BuildProgramFromForm()
+        {
+            int programId;
+            if (!int.TryParse(ProgramIdTextBox.Text, out programId))
+            {
+                throw new InvalidOperationException("Program ID must be a valid integer.");
+            }
+
+            byte duration;
+            if (!byte.TryParse(ProgramDurationTextBox.Text, out duration))
+            {
+                throw new InvalidOperationException("Duration must be a valid number of terms (0–255).");
+            }
+
+            return new ProgramModel
+            {
+                ProgramId = programId,
+                ProgramName = ProgramNameTextBox.Text?.Trim(),
+                CredentialType = ProgramCredentialTextBox.Text?.Trim(),
+                DurationInTerms = duration,
+                IsAvailable = ProgramIsAvailableCheckBox.IsChecked == true
+            };
+        }
+
+        #endregion
+
+        #region PROGRAM EVENTS
+
+        private void AddProgramButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ProgramModel program = BuildProgramFromForm();
+                _programRepository.InsertProgram(program);
+
+                MessageBox.Show("Program added successfully.",
+                                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                LoadPrograms();
+                ClearProgramForm();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding program: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void UpdateProgramButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ProgramModel program = BuildProgramFromForm();
+                _programRepository.UpdateProgram(program);
+
+                MessageBox.Show("Program updated successfully.",
+                                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                LoadPrograms();
+                ClearProgramForm();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating program: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void DeleteProgramButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int programId;
+                if (!int.TryParse(ProgramIdTextBox.Text, out programId))
+                {
+                    MessageBox.Show("Program ID is invalid.",
+                                    "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var result = MessageBox.Show($"Are you sure you want to delete program #{programId}?",
+                                             "Confirm Delete",
+                                             MessageBoxButton.YesNo,
+                                             MessageBoxImage.Question);
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                _programRepository.DeleteProgram(programId);
+
+                MessageBox.Show("Program deleted successfully.",
+                                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                LoadPrograms();
+                ClearProgramForm();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting program: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ClearProgramButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearProgramForm();
+        }
+
+        private void RefreshProgramButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadPrograms();
+        }
+
+        private void ProgramDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ProgramDataGrid.SelectedItem is DataRowView row)
+            {
+                ProgramIdTextBox.Text = row["programID"]?.ToString() ?? row["programId"]?.ToString();
+                ProgramNameTextBox.Text = row["programName"]?.ToString();
+                ProgramCredentialTextBox.Text = row["credentialType"]?.ToString();
+                ProgramDurationTextBox.Text = row["durationInTerms"]?.ToString();
+
+                bool isAvailable;
+                if (bool.TryParse(row["isAvailable"]?.ToString(), out isAvailable))
+                {
+                    ProgramIsAvailableCheckBox.IsChecked = isAvailable;
+                }
+                else
+                {
+                    ProgramIsAvailableCheckBox.IsChecked = false;
+                }
+            }
+        }
+
+        #endregion
     }
 }
