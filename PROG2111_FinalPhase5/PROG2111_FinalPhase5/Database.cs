@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
+using MySql.Data.MySqlClient;
 
 namespace PROG2111_FinalPhase5
 {
@@ -9,76 +11,93 @@ namespace PROG2111_FinalPhase5
      * FIRST VERSION : 12/09/2025
      *
      * PURPOSE :
-     *   Provides a simple facade over ProgramRepository and StudentRepository.
-     *   The WPF UI uses this class to load DataTables for display and to perform
-     *   CRUD operations against the MySQL CourseRegProDB database.
+     *   Provides a facade over ProgramRepository and StudentRepository.
+     *   Exposes in-memory DataTables for WPF binding and performs CRUD
+     *   operations against the MySQL CourseRegProDB database, including
+     *   a transactional delete for students and their enrollments.
      */
     internal class Database
     {
-		public Database()
-		{
-            ds.Tables.Add(studentTable);
-            ds.Tables.Add(programTable);
-            ds.Tables.Add(courseTable);
-            ds.Tables.Add(programCourseTable);
-            ds.Tables.Add(instructorTable);
-            ds.Tables.Add(CourseOfferingTable);
-            ds.Tables.Add(CourseEnrollmentTable);
-            ds.Tables.Add(InstructorAssignmentTable);
+        // Repositories
+        private readonly ProgramRepository _programRepository;
+        private readonly StudentRepository _studentRepository;
 
-            StudentProgramIDRelation = new DataRelation("FK_Student_ProgramId", programTable.Columns["programId"], studentTable.Columns["studentId"]);
-            ProgramCourseProgramIDRelation = new DataRelation("FK_ProgramCourse_ProgramId", programTable.Columns["programId"], programCourseTable.Columns["programId"]);
-            ProgramCourseCourseIDRelation = new DataRelation("FK_ProgramCourse_CourseId", courseTable.Columns["courseId"], programCourseTable.Columns["courseId"]);
-            CourseOfferingCourseIdRelation = new DataRelation("FK_CourseOffering_CourseId", courseTable.Columns["courseId"], CourseOfferingTable.Columns["courseId"]);
-            CourseEnrollmentStudentIdRelation = new DataRelation("FK_CourseEnrollment_StudentId", studentTable.Columns["studentId"], CourseEnrollmentTable.Columns["studentId"]);
-            CourseEnrollmentOfferingIdRelation = new DataRelation("FK_CourseEnrollment_OfferingId", CourseOfferingTable.Columns["offeringId"], CourseEnrollmentTable.Columns["offeringId"]);
-            InstructorAssignmentInstructorIdRelation = new DataRelation("FK_InstructorAssignment_InstructorId", instructorTable.Columns["instructorId"], InstructorAssignmentTable.Columns["instructorId"]);
-            InstructorAssignmentOfferingIdRelation = new DataRelation("FK_InstructorAssignment_OfferingId", CourseOfferingTable.Columns["offeringId"], InstructorAssignmentTable.Columns["offeringId"]);
+        // Table wrappers
+        private readonly StudentTable _studentTableWrapper;
+        private readonly ProgramTable _programTableWrapper;
+        private readonly CourseTable _courseTableWrapper;
+        private readonly ProgramCourseTable _programCourseTableWrapper;
+        private readonly InstructorTable _instructorTableWrapper;
+        private readonly CourseOfferingTable _courseOfferingTableWrapper;
+        private readonly CourseEnrollmentTable _courseEnrollmentTableWrapper;
+        private readonly InstructorAssignmentTable _instructorAssignmentTableWrapper;
 
+        // DataTables exposed to the UI
+        public DataTable studentTable { get; }
+        public DataTable programTable { get; }
+        public DataTable courseTable { get; }
+        public DataTable programCourseTable { get; }
+        public DataTable instructorTable { get; }
+        public DataTable CourseOfferingTable { get; }
+        public DataTable CourseEnrollmentTable { get; }
+        public DataTable InstructorAssignmentTable { get; }
+
+        public Database()
+        {
             _programRepository = new ProgramRepository();
             _studentRepository = new StudentRepository();
 
+            _studentTableWrapper = new StudentTable();
+            _programTableWrapper = new ProgramTable();
+            _courseTableWrapper = new CourseTable();
+            _programCourseTableWrapper = new ProgramCourseTable();
+            _instructorTableWrapper = new InstructorTable();
+            _courseOfferingTableWrapper = new CourseOfferingTable();
+            _courseEnrollmentTableWrapper = new CourseEnrollmentTable();
+            _instructorAssignmentTableWrapper = new InstructorAssignmentTable();
+
+            studentTable = _studentTableWrapper.StudentDataTable;
+            programTable = _programTableWrapper.ProgramDataTable;
+            courseTable = _courseTableWrapper.CourseDataTable;
+            programCourseTable = _programCourseTableWrapper.ProgramCourseDataTable;
+            instructorTable = _instructorTableWrapper.InstructorDataTable;
+            CourseOfferingTable = _courseOfferingTableWrapper.CourseOfferingDataTable;
+            CourseEnrollmentTable = _courseEnrollmentTableWrapper.CourseEnrollmentDataTable;
+            InstructorAssignmentTable = _instructorAssignmentTableWrapper.InstructorAssignemntDataTable;
+
+            // Initial load from the database for Program and Student
             RefreshProgramTable();
             RefreshStudentTable();
         }
 
-        public DataSet ds = new DataSet("DataSet");
-
-        public DataRelation StudentProgramIDRelation;
-        public DataRelation ProgramCourseProgramIDRelation;
-        public DataRelation ProgramCourseCourseIDRelation;
-        public DataRelation CourseOfferingCourseIdRelation;
-        public DataRelation CourseEnrollmentStudentIdRelation;
-        public DataRelation CourseEnrollmentOfferingIdRelation;
-        public DataRelation InstructorAssignmentInstructorIdRelation;
-        public DataRelation InstructorAssignmentOfferingIdRelation;
-
-        public DataTable studentTable = new StudentTable().StudentDataTable;
-        public DataTable programTable = new ProgramTable().ProgramDataTable;
-        public DataTable courseTable = new CourseTable().CourseDataTable;
-        public DataTable programCourseTable = new ProgramCourseTable().ProgramCourseDataTable;
-        public DataTable instructorTable = new InstructorTable().InstructorDataTable;
-        public DataTable CourseOfferingTable = new CourseOfferingTable().CourseOfferingDataTable;
-        public DataTable CourseEnrollmentTable = new CourseEnrollmentTable().CourseEnrollmentDataTable;
-        public DataTable InstructorAssignmentTable = new InstructorAssignmentTable().InstructorAssignemntDataTable;
-
-        private readonly ProgramRepository _programRepository;
-        private readonly StudentRepository _studentRepository;
-
-        // --- Load / Refresh ---
-
+        // --------------------------------------------------------------------
+        // Refresh methods (DB -> DataTable) for Program & Student
+        // --------------------------------------------------------------------
         public void RefreshProgramTable()
         {
-            programTable = _programRepository.GetAllProgramsAsDataTable();
+            programTable.Clear();
+
+            DataTable latest = _programRepository.GetAllProgramsAsDataTable();
+            foreach (DataRow row in latest.Rows)
+            {
+                programTable.ImportRow(row);
+            }
         }
 
         public void RefreshStudentTable()
         {
-            studentTable = _studentRepository.GetAllStudentsAsDataTable();
+            studentTable.Clear();
+
+            DataTable latest = _studentRepository.GetAllStudentsAsDataTable();
+            foreach (DataRow row in latest.Rows)
+            {
+                studentTable.ImportRow(row);
+            }
         }
 
-        // --- Program CRUD ----
-
+        // --------------------------------------------------------------------
+        // Program CRUD
+        // --------------------------------------------------------------------
         public void InsertProgram(ProgramModel program)
         {
             _programRepository.InsertProgram(program);
@@ -97,8 +116,9 @@ namespace PROG2111_FinalPhase5
             RefreshProgramTable();
         }
 
-        // --- Student CRUD ---
-
+        // --------------------------------------------------------------------
+        // Student CRUD
+        // --------------------------------------------------------------------
         public void InsertStudent(StudentModel student)
         {
             _studentRepository.InsertStudent(student);
@@ -111,10 +131,63 @@ namespace PROG2111_FinalPhase5
             RefreshStudentTable();
         }
 
+        /// <summary>
+        /// Deletes a student and any related CourseEnrollment rows in a single
+        /// MySQL transaction. This is our explicit demonstration of transaction
+        /// control for Phase 5.
+        /// </summary>
         public void DeleteStudent(int studentId)
         {
-            _studentRepository.DeleteStudent(studentId);
+            using (MySqlConnection connection = DbConnectionFactory.CreateConnection())
+            {
+                connection.Open();
+
+                using (MySqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. Delete enrollments for this student (if any)
+                        using (MySqlCommand deleteEnrollments = new MySqlCommand(
+                                   @"DELETE FROM CourseEnrollment
+                                     WHERE studentID = @studentID;",
+                                   connection,
+                                   transaction))
+                        {
+                            deleteEnrollments.Parameters.AddWithValue("@studentID", studentId);
+                            deleteEnrollments.ExecuteNonQuery();
+                        }
+
+                        // 2. Delete the student record
+                        using (MySqlCommand deleteStudent = new MySqlCommand(
+                                   @"DELETE FROM Student
+                                     WHERE studentID = @studentID;",
+                                   connection,
+                                   transaction))
+                        {
+                            deleteStudent.Parameters.AddWithValue("@studentID", studentId);
+
+                            int rowsAffected = deleteStudent.ExecuteNonQuery();
+                            if (rowsAffected == 0)
+                            {
+                                throw new InvalidOperationException(
+                                    "No student record exists with the specified ID.");
+                            }
+                        }
+
+                        // 3. Commit if both operations succeed
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        // Any failure -> rollback the transaction
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+
+            // Reload the student table from the DB
             RefreshStudentTable();
         }
-    }//end of Database
-}//end of PROG2111_FinalPhase5
+    }
+}

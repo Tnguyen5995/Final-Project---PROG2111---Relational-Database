@@ -13,27 +13,38 @@ namespace PROG2111_FinalPhase5
      */
     internal class StudentRepository
     {
+        /// <summary>
+        /// Returns all students as a DataTable, with columns matching StudentTable:
+        /// studentId, programId, firstName, lastName, email, dateOfBirth, dateEnrolled
+        /// </summary>
         public DataTable GetAllStudentsAsDataTable()
         {
-            DataTable table = new DataTable();
+            DataTable dt = new DataTable();
 
             using (MySqlConnection connection = DbConnectionFactory.CreateConnection())
             {
                 connection.Open();
 
-                const string query =
-                    @"SELECT studentID, programID, firstName, lastName, emailAddress,
-                             dateOfBirth, dateEnrolled
-                      FROM Student
-                      ORDER BY lastName, firstName;";
+                const string query = @"
+                    SELECT
+                        studentID    AS studentId,
+                        programID    AS programId,
+                        firstName,
+                        lastName,
+                        emailAddress AS email,
+                        dateOfBirth,
+                        dateEnrolled
+                    FROM Student
+                    ORDER BY lastName, firstName;";
 
-                using (MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection))
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
                 {
-                    adapter.Fill(table);
+                    adapter.Fill(dt);
                 }
             }
 
-            return table;
+            return dt;
         }
 
         public List<StudentModel> GetAllStudents()
@@ -44,18 +55,24 @@ namespace PROG2111_FinalPhase5
             {
                 connection.Open();
 
-                const string query =
-                    @"SELECT studentID, programID, firstName, lastName, emailAddress,
-                             dateOfBirth, dateEnrolled
-                      FROM Student
-                      ORDER BY lastName, firstName;";
+                const string query = @"
+                    SELECT
+                        studentID,
+                        programID,
+                        firstName,
+                        lastName,
+                        emailAddress,
+                        dateOfBirth,
+                        dateEnrolled
+                    FROM Student
+                    ORDER BY lastName, firstName;";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        StudentModel model = new StudentModel
+                        students.Add(new StudentModel
                         {
                             StudentId = reader.GetInt32("studentID"),
                             ProgramId = reader.GetInt32("programID"),
@@ -63,12 +80,10 @@ namespace PROG2111_FinalPhase5
                             LastName = reader.GetString("lastName"),
                             EmailAddress = reader.GetString("emailAddress"),
                             DateOfBirth = reader.IsDBNull(reader.GetOrdinal("dateOfBirth"))
-                                ? (DateTime?)null
-                                : reader.GetDateTime("dateOfBirth"),
+                                           ? (DateTime?)null
+                                           : reader.GetDateTime("dateOfBirth"),
                             DateEnrolled = reader.GetDateTime("dateEnrolled")
-                        };
-
-                        students.Add(model);
+                        });
                     }
                 }
             }
@@ -82,11 +97,17 @@ namespace PROG2111_FinalPhase5
             {
                 connection.Open();
 
-                const string query =
-                    @"SELECT studentID, programID, firstName, lastName, emailAddress,
-                             dateOfBirth, dateEnrolled
-                      FROM Student
-                      WHERE studentID = @studentID;";
+                const string query = @"
+                    SELECT
+                        studentID,
+                        programID,
+                        firstName,
+                        lastName,
+                        emailAddress,
+                        dateOfBirth,
+                        dateEnrolled
+                    FROM Student
+                    WHERE studentID = @studentID;";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
@@ -104,8 +125,8 @@ namespace PROG2111_FinalPhase5
                                 LastName = reader.GetString("lastName"),
                                 EmailAddress = reader.GetString("emailAddress"),
                                 DateOfBirth = reader.IsDBNull(reader.GetOrdinal("dateOfBirth"))
-                                    ? (DateTime?)null
-                                    : reader.GetDateTime("dateOfBirth"),
+                                               ? (DateTime?)null
+                                               : reader.GetDateTime("dateOfBirth"),
                                 DateEnrolled = reader.GetDateTime("dateEnrolled")
                             };
                         }
@@ -122,19 +143,14 @@ namespace PROG2111_FinalPhase5
             {
                 connection.Open();
 
-                const string query =
-                    @"INSERT INTO Student
-                        (studentID, programID, firstName, lastName, emailAddress,
-                         dateOfBirth, dateEnrolled)
-                      VALUES
-                        (@studentID, @programID, @firstName, @lastName, @emailAddress,
-                         @dateOfBirth, @dateEnrolled);";
+                const string query = @"
+                    INSERT INTO Student
+                        (programID, firstName, lastName, emailAddress, dateOfBirth, dateEnrolled)
+                    VALUES
+                        (@programID, @firstName, @lastName, @emailAddress, @dateOfBirth, @dateEnrolled);";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
-                    // Same idea: studentID is AUTO_INCREMENT in DB, but we are letting the UI
-                    // supply it to match your current design.
-                    cmd.Parameters.AddWithValue("@studentID", student.StudentId);
                     cmd.Parameters.AddWithValue("@programID", student.ProgramId);
                     cmd.Parameters.AddWithValue("@firstName", student.FirstName);
                     cmd.Parameters.AddWithValue("@lastName", student.LastName);
@@ -162,15 +178,16 @@ namespace PROG2111_FinalPhase5
             {
                 connection.Open();
 
-                const string query =
-                    @"UPDATE Student
-                      SET programID = @programID,
-                          firstName = @firstName,
-                          lastName = @lastName,
-                          emailAddress = @emailAddress,
-                          dateOfBirth = @dateOfBirth,
-                          dateEnrolled = @dateEnrolled
-                      WHERE studentID = @studentID;";
+                const string query = @"
+                    UPDATE Student
+                    SET
+                        programID    = @programID,
+                        firstName    = @firstName,
+                        lastName     = @lastName,
+                        emailAddress = @emailAddress,
+                        dateOfBirth  = @dateOfBirth,
+                        dateEnrolled = @dateEnrolled
+                    WHERE studentID = @studentID;";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
@@ -202,9 +219,9 @@ namespace PROG2111_FinalPhase5
             {
                 connection.Open();
 
-                const string query =
-                    @"DELETE FROM Student
-                      WHERE studentID = @studentID;";
+                const string query = @"
+                    DELETE FROM Student
+                    WHERE studentID = @studentID;";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {

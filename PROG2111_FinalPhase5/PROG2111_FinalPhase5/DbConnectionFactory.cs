@@ -1,5 +1,4 @@
 ﻿using System.Configuration;
-using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 
 namespace PROG2111_FinalPhase5
@@ -9,6 +8,9 @@ namespace PROG2111_FinalPhase5
      * PROJECT : PROG2111_FinalPhase5
      * PROGRAMMER : Tuan Thanh Nguyen
      * FIRST VERSION : 12/08/2025
+     * DESCRIPTION :
+     *   Central factory for creating MySQL connections using the
+     *   connection string in App.config.
      */
     internal static class DbConnectionFactory
     {
