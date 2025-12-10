@@ -131,12 +131,13 @@ namespace PROG2111_FinalPhase5
 
                 const string query = @"
                     INSERT INTO Program
-                        (programName, credentialType, durationInTerms, isAvailable)
+                        (programID, programName, credentialType, durationInTerms, isAvailable)
                     VALUES
-                        (@programName, @credentialType, @durationInTerms, @isAvailable);";
+                        (@programID, @programName, @credentialType, @durationInTerms, @isAvailable);";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
+                    cmd.Parameters.AddWithValue("@programID", program.ProgramId);
                     cmd.Parameters.AddWithValue("@programName", program.ProgramName);
                     cmd.Parameters.AddWithValue("@credentialType", program.CredentialType);
                     cmd.Parameters.AddWithValue("@durationInTerms", program.DurationInTerms);
