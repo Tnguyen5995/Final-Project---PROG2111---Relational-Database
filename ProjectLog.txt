@@ -1,0 +1,47 @@
+PROJECT LOG – CourseRegProDB
+
+Course:        PROG2111
+Project:       Relational Database + C# CRUD (CourseRegProDB)
+Group:          Group 1
+Date:          2025-12-10
+
+------------------------------------------------------------
+TEAM MEMBERS
+------------------------------------------------------------
+Member 1: Tuan Thanh Nguyen  
+Member 2: George Shapka 
+Member 3: Toro-Abasi Udo
+------------------------------------------------------------
+ROLE SUMMARY
+------------------------------------------------------------
+Member 1: Tuan Thanh Nguyen
+- Primary role: Application developer / MySQL integration
+- Implemented Database.cs facade and DbConnectionFactory.cs for connecting to MySQL using ADO.NET.
+- Implemented StudentRepository and ProgramRepository (CRUD operations, parameterized queries).
+- Implemented full CRUD in the UI for Student and Program entities against the MySQL database and in-memory CRUD for the other tables.
+- Added transaction control for student deletion (cascading delete of CourseEnrollment before deleting Student).
+
+Member 2: George Shapka
+- Primary role: Data modeling, ERD, and database design.
+- Built and refactored the WPF UI (MainWindow.xaml + MainWindow.xaml.cs) with tabs for Students, Programs, Courses, ProgramCourse, Instructors, CourseOfferings, CourseEnrollments, and InstructorAssignments.
+- Defined the project use case (CourseRegPro – course registration management system).
+- Identified main entities, attributes, and relationships for the system (Student, Program, Course, CourseOffering, Instructor, CourseEnrollment, InstructorAssignment, ProgramCourse).
+- Created the ERD using [tool name, e.g., draw.io / Lucidchart] and ensured all keys and relationships matched the business rules.
+- Helped align the ERD with the final MySQL schema implemented in the DDL script.
+
+Member 3: Toro-Abasi Udo
+- Primary role: Normalization and DDL implementation.
+- Produced the normalization report, showing each table from 1NF → 2NF → 3NF and explaining how redundancies and partial/transitive dependencies were removed.
+- Wrote the MySQL DDL script (Phase 4) to create CourseRegProDB with all tables, primary keys, foreign keys, and constraints.
+- Verified referential integrity between tables and updated the schema according to feedback from Phases 2 and 3.
+- Assisted with initial test data and validation of CRUD operations against the MySQL schema.
+
+------------------------------------------------------------
+WORKFLOW & COLLABORATION
+------------------------------------------------------------
+- We used a shared GitHub repository for source control. Each member worked on their own branch and merged changes into main after review.
+- Member 1 focused on C# code commits (repositories, Database facade, WPF UI).
+- Member 2 focused on ERD updates and documentation commits (ERD diagrams, PDFs).
+- Member 3 focused on SQL DDL and normalization report commits.
+
+
