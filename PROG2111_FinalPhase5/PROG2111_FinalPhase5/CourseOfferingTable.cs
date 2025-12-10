@@ -22,7 +22,6 @@ namespace PROG2111_FinalPhase5
 			CourseOfferingDataTable.PrimaryKey = new DataColumn[] { offeringId };
 
 			CourseOfferingDataTable.Columns.Add("courseId", typeof(int));
-            CourseOfferingDataTable.Columns.Add("instructorId", typeof(int));
             CourseOfferingDataTable.Columns.Add("termStart", typeof(int));
 			CourseOfferingDataTable.Columns.Add("termEnd", typeof(int));
 			CourseOfferingDataTable.Columns.Add("acedemicYear", typeof(int));
