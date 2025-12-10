@@ -383,7 +383,7 @@
 			<TabItem Header="Delete">
 				
 			</TabItem>
-			<TabItem Header="Fill Tables">
+			<TabItem Header="Fill Tables(debugging purposes)">
 				<Button Content="FILL" Margin="10" FontSize="100" Name="btnFillTables" Click="btnFillTables_Click"/>
 			</TabItem>
 		</TabControl>
