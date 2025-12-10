@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,6 +48,163 @@ namespace PROG2111_FinalPhase5
                     break;
             }
         }
+
+        private void btnDeleteStudent_Click(object sender, RoutedEventArgs e)
+        {
+            if (readStudentDataGrid.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a student to delete.", "No Selection",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            DataRowView rowView = readStudentDataGrid.SelectedItem as DataRowView;
+            if (rowView == null)
+            {
+                return;
+            }
+
+            int studentId = Convert.ToInt32(rowView["studentID"]);
+
+            var result = MessageBox.Show($"Delete student {studentId}?",
+                "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                db.DeleteStudent(studentId);
+                RefreshReadGrids();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error deleting student:\n" + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnDeleteProgram_Click(object sender, RoutedEventArgs e)
+        {
+            if (readProgramDataGrid.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a program to delete.", "No Selection",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            DataRowView rowView = readProgramDataGrid.SelectedItem as DataRowView;
+            if (rowView == null)
+            {
+                return;
+            }
+
+            int programId = Convert.ToInt32(rowView["programID"]);
+
+            var result = MessageBox.Show($"Delete program {programId}?",
+                "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                db.DeleteProgram(programId);
+                RefreshReadGrids();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error deleting program:\n" + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnUpdateStudent_Click(object sender, RoutedEventArgs e)
+        {
+            if (readStudentDataGrid.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a student row to update.", "No Selection",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            DataRowView rowView = readStudentDataGrid.SelectedItem as DataRowView;
+            if (rowView == null)
+            {
+                return;
+            }
+
+            try
+            {
+                StudentModel student = new StudentModel
+                {
+                    StudentId = Convert.ToInt32(rowView["studentID"]),
+                    ProgramId = Convert.ToInt32(rowView["programID"]),
+                    FirstName = Convert.ToString(rowView["firstName"]),
+                    LastName = Convert.ToString(rowView["lastName"]),
+                    EmailAddress = Convert.ToString(rowView["emailAddress"]),
+                    DateOfBirth = rowView["dateOfBirth"] == DBNull.Value
+                        ? (DateTime?)null
+                        : Convert.ToDateTime(rowView["dateOfBirth"]),
+                    DateEnrolled = Convert.ToDateTime(rowView["dateEnrolled"])
+                };
+
+                db.UpdateStudent(student);
+                RefreshReadGrids();
+
+                MessageBox.Show("Student updated.", "Success",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating student:\n" + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnUpdateProgram_Click(object sender, RoutedEventArgs e)
+        {
+            if (readProgramDataGrid.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a program row to update.", "No Selection",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            DataRowView rowView = readProgramDataGrid.SelectedItem as DataRowView;
+            if (rowView == null)
+            {
+                return;
+            }
+
+            try
+            {
+                ProgramModel program = new ProgramModel
+                {
+                    ProgramId = Convert.ToInt32(rowView["programID"]),
+                    ProgramName = Convert.ToString(rowView["programName"]),
+                    CredentialType = Convert.ToString(rowView["credentialType"]),
+                    DurationInTerms = Convert.ToByte(rowView["durationInTerms"]),
+                    IsAvailable = Convert.ToBoolean(rowView["isAvailable"])
+                };
+
+                db.UpdateProgram(program);
+                RefreshReadGrids();
+
+                MessageBox.Show("Program updated.", "Success",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating program:\n" + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
     }
 }//end of PROG2111_FinalPhase5

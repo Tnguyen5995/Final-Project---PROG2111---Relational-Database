@@ -331,37 +331,55 @@
 			</TabItem>
 			<TabItem Header="Read">
 
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition/>
-						<RowDefinition Height="15*"/>
-					</Grid.RowDefinitions>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-					<ComboBox Name="readComboBox" SelectionChanged="readComboBox_SelectionChanged">
-						<ComboBoxItem Name="readCbiStudentTable" Content="Student Table"/>
-						<ComboBoxItem Name="readCbiProgramTable" Content="Program Table"/>
-						<ComboBoxItem Name="readCbiProgramCourseTable" Content="Program Course Table"/>
-						<ComboBoxItem Name="readCbiCourseTable" Content="Course Table"/>
-						<ComboBoxItem Name="readCbiCourseOfferingTable" Content="Course Offering Table"/>
-						<ComboBoxItem Name="readCbiCourseEnrollmentTable" Content="Course Enrollment Table"/>
-						<ComboBoxItem Name="readCbiInstructorTable" Content="Instructor Table"/>
-						<ComboBoxItem Name="readCbiInstructorAssignmentTable" Content="Instructor Assignment Table"/>
-					</ComboBox>
+                    <!-- Row 0: Buttons -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button x:Name="btnDeleteStudent"
+                    Content="Delete Student"
+                    Width="120"
+                    Margin="0,0,8,0"
+                    Click="btnDeleteStudent_Click" />
+                        <Button x:Name="btnUpdateStudent"
+                    Content="Update Student"
+                    Width="120"
+                    Margin="0,0,16,0"
+                    Click="btnUpdateStudent_Click" />
+                        <Button x:Name="btnDeleteProgram"
+                    Content="Delete Program"
+                    Width="120"
+                    Margin="0,0,8,0"
+                    Click="btnDeleteProgram_Click" />
+                        <Button x:Name="btnUpdateProgram"
+                    Content="Update Program"
+                    Width="120"
+                    Click="btnUpdateProgram_Click" />
+                    </StackPanel>
 
-					<!--grids-->
-					<DataGrid Name="readStudentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readProgramDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readProgramCourseDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readInstructorDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readCourseOfferingDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
-					<DataGrid Name="readCourseEnrollmentDataGrid" Grid.Row="1" IsReadOnly="True" Visibility="Hidden"/>
+                    <!-- Row 1: Grids -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
+                        <DataGrid x:Name="readStudentDataGrid"
+                      Grid.Column="0"
+                      AutoGenerateColumns="True"
+                      IsReadOnly="False" />
 
-
-				</Grid>
-			</TabItem>
-			<TabItem Header="Update">
+                        <DataGrid x:Name="readProgramDataGrid"
+                      Grid.Column="1"
+                      AutoGenerateColumns="True"
+                      IsReadOnly="False" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Update">
 				
 			</TabItem>
 			<TabItem Header="Delete">

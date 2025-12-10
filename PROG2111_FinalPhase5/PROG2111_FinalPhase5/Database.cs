@@ -1,4 +1,7 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
+using MySql.Data.MySqlClient;
+
 
 namespace PROG2111_FinalPhase5
 {
@@ -83,8 +86,69 @@ namespace PROG2111_FinalPhase5
 
         public void DeleteStudent(int studentId)
         {
-            _studentRepository.DeleteStudent(studentId);
-            RefreshStudentTable();
+            using (MySqlConnection connection = DbConnectionFactory.CreateConnection())
+            {
+                connection.Open();
+
+                using (MySqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // First, delete any enrollments for this student
+                        using (MySqlCommand deleteEnrollmentsCommand = new MySqlCommand(
+                                   @"DELETE FROM CourseEnrollment 
+                             WHERE studentID = @studentID;",
+                                   connection,
+                                   transaction))
+                        {
+                            deleteEnrollmentsCommand.Parameters.Add("@studentID", MySqlDbType.Int32).Value = studentId;
+                            deleteEnrollmentsCommand.ExecuteNonQuery();
+                        }
+
+                        // Then, delete the student record itself
+                        using (MySqlCommand deleteStudentCommand = new MySqlCommand(
+                                   @"DELETE FROM Student 
+                             WHERE studentID = @studentID;",
+                                   connection,
+                                   transaction))
+                        {
+                            deleteStudentCommand.Parameters.Add("@studentID", MySqlDbType.Int32).Value = studentId;
+
+                            int rowsAffected = deleteStudentCommand.ExecuteNonQuery();
+
+                            if (rowsAffected == 0)
+                            {
+                                // No row = no such student – treat as error for the caller
+                                throw new InvalidOperationException(
+                                    "No student record exists with the specified ID.");
+                            }
+                        }
+
+                        // Everything succeeded – commit the transaction
+                        transaction.Commit();
+
+                        // Refresh the in-memory DataTable so the UI stays in sync
+                        this.RefreshStudentsFromDatabase();
+                    }
+                    catch (MySqlException ex)
+                    {
+                        transaction.Rollback();
+                        throw new ApplicationException(
+                            "An error occurred while deleting the student and enrollments from the database.",
+                            ex);
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private void RefreshStudentsFromDatabase()
+        {
+            throw new NotImplementedException();
         }
     }
 }
