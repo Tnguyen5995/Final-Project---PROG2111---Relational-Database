@@ -48,9 +48,6 @@ namespace PROG2111_FinalPhase5
 				case "Course Enrollment Table":
                     createCourseEnrollmentGrid.Visibility = Visibility.Visible;
 					break;
-				case "Instructor Assignment Table":
-                    createInstructorAssignmentGrid.Visibility = Visibility.Visible;
-					break;
 			}
 		}
         private void btnStudentSubmit_Click(object sender, RoutedEventArgs e)
@@ -119,6 +116,8 @@ namespace PROG2111_FinalPhase5
 
             if (error)
             {
+                MessageBox.Show("Please correct the highlighted fields.", "Validation Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -163,6 +162,8 @@ namespace PROG2111_FinalPhase5
             }
         }
 
+
+
         private void btnProgramSubmit_Click(object sender, RoutedEventArgs e)
         {
             bool error = false;
@@ -201,11 +202,13 @@ namespace PROG2111_FinalPhase5
                 error = true;
             }
 
-            // availability checkbox
+            // availability checkbox (note the actual name in your XAML)
             bool isAvailable = chkCreateProgramAvaliblility.IsChecked == true;
 
             if (error)
             {
+                MessageBox.Show("Please correct the highlighted fields.", "Validation Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -245,6 +248,8 @@ namespace PROG2111_FinalPhase5
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+
         private void btnCreateCourseSubmit_Click(object sender, RoutedEventArgs e)
 		{
 			bool error = false;
@@ -341,19 +346,10 @@ namespace PROG2111_FinalPhase5
 				txtCreateProgramCourseCourseID.Background = Brushes.Red;
 				error = true;
 			}
-			int[] key = new int[] { programId, courseId };
-
-            if (ProgramCourseTable.ProgramCourseKeys.Contains(key))
-            {
-                txtCreateProgramCourseProgramID.Background = Brushes.Red;
-                txtCreateProgramCourseCourseID.Background = Brushes.Red;
-                txtCreateProgramCourseCourseID.Text = "Program Course Already Exists";
-                error = true;
-            }
 
 			if(error)
 			{
-                return;
+				return;
 			}
 
 			DataRow dr = db.programCourseTable.NewRow();
@@ -361,8 +357,6 @@ namespace PROG2111_FinalPhase5
 			dr[1] = courseId;
 
 			db.programCourseTable.Rows.Add(dr);
-
-			ProgramCourseTable.ProgramCourseKeys.Add(new int[] { programId, courseId });
 
 			txtCreateProgramCourseProgramID.Text = string.Empty;
 			txtCreateProgramCourseCourseID.Text = string.Empty;
@@ -550,7 +544,7 @@ namespace PROG2111_FinalPhase5
             dr[6] = selectionCode;
             dr[7] = txtCourseOfferingDeliveryMode.Text;
             dr[8] = maxCapacity;
-            dr[9] = txtCourseOfferingRoomLocation.Text;
+            dr[10] = txtCourseOfferingRoomLocation.Text;
 
 			db.CourseOfferingTable.Rows.Add(dr);
 
@@ -643,53 +637,6 @@ namespace PROG2111_FinalPhase5
 			txtCreateCourseEnrollmentFinalGrade.Text = string.Empty;
 
             return;
-        }
-        private void btnCreateInstructorAssignmentSubmit_Click(object sender, RoutedEventArgs e)
-        {
-            bool error = false;
-
-            //instructor id
-            int instructorId;
-            txtCreateInstructorAssignmentInstructorID.Background = Brushes.Transparent;
-            if (!int.TryParse(txtCreateInstructorAssignmentInstructorID.Text, out instructorId))
-            {
-                txtCreateInstructorAssignmentInstructorID.Background = Brushes.Red;
-                error = true;
-            }
-            if (!InstructorTable.InstructorIds.Contains(instructorId))
-            {
-                txtCreateInstructorAssignmentInstructorID.Text = "Id doesnt exist";
-                txtCreateInstructorAssignmentInstructorID.Background = Brushes.Red;
-                error = true;
-            }
-            //offering id
-            int offeringId;
-            txtCreateInstructorAssignmentOfferingID.Background = Brushes.Transparent;
-            if (!int.TryParse(txtCreateInstructorAssignmentOfferingID.Text, out offeringId))
-            {
-                txtCreateInstructorAssignmentOfferingID.Background = Brushes.Red;
-                error = true;
-            }
-            if (!CourseOfferingTable.OfferingIds.Contains(offeringId))
-            {
-                txtCreateInstructorAssignmentOfferingID.Text = "Id doesnt exist";
-                txtCreateInstructorAssignmentOfferingID.Background = Brushes.Red;
-                error = true;
-            }
-
-            if (error)
-            {
-                return;
-            }
-
-            DataRow dr = db.InstructorAssignmentTable.NewRow();
-            dr[0] = instructorId;
-            dr[1] = offeringId;
-
-            db.InstructorAssignmentTable.Rows.Add(dr);
-
-            txtCreateInstructorAssignmentInstructorID.Text = string.Empty;
-            txtCreateInstructorAssignmentOfferingID.Text = string.Empty;
         }
     }
 }

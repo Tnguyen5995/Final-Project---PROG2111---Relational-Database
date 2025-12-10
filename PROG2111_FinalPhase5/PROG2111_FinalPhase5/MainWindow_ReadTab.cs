@@ -56,7 +56,7 @@ namespace PROG2111_FinalPhase5
         {
             if (readStudentDataGrid.SelectedItem == null)
             {
-                MessageBox.Show("Please select a student to delete.", "No Selection",
+                MessageBox.Show("Please select a student row to update.", "No Selection",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -67,20 +67,22 @@ namespace PROG2111_FinalPhase5
                 return;
             }
 
-            int studentId = Convert.ToInt32(rowView["studentID"]);
+            int studentId = Convert.ToInt32(rowView["studentId"]); // matches StudentTable column
 
-            var result = MessageBox.Show($"Delete student {studentId}?",
-                "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (result != MessageBoxResult.Yes)
+            if (MessageBox.Show($"Delete student {studentId} and their enrollments?",
+                                "Confirm Delete",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Warning) != MessageBoxResult.Yes)
             {
                 return;
             }
 
             try
             {
-                db.DeleteStudent(studentId);
+                db.DeleteStudent(studentId);   // uses MySQL transaction
                 RefreshReadGrids();
+                MessageBox.Show("Student deleted.", "Success",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -89,11 +91,12 @@ namespace PROG2111_FinalPhase5
             }
         }
 
+
         private void btnDeleteProgram_Click(object sender, RoutedEventArgs e)
         {
             if (readProgramDataGrid.SelectedItem == null)
             {
-                MessageBox.Show("Please select a program to delete.", "No Selection",
+                MessageBox.Show("Please select a program row to update.", "No Selection",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -103,6 +106,7 @@ namespace PROG2111_FinalPhase5
             {
                 return;
             }
+
 
             int programId = Convert.ToInt32(rowView["programID"]);
 
@@ -141,19 +145,20 @@ namespace PROG2111_FinalPhase5
                 return;
             }
 
+
             try
             {
                 StudentModel student = new StudentModel
                 {
-                    StudentId = Convert.ToInt32(rowView["studentID"]),
-                    ProgramId = Convert.ToInt32(rowView["programID"]),
-                    FirstName = Convert.ToString(rowView["firstName"]),
-                    LastName = Convert.ToString(rowView["lastName"]),
-                    EmailAddress = Convert.ToString(rowView["emailAddress"]),
+                    StudentId = Convert.ToInt32(rowView["studentId"]),
+                    ProgramId = Convert.ToInt32(rowView["programId"]),
+                    FirstName = rowView["firstName"].ToString(),
+                    LastName = rowView["lastName"].ToString(),
+                    EmailAddress = rowView["email"].ToString(),
                     DateOfBirth = rowView["dateOfBirth"] == DBNull.Value
-                        ? (DateTime?)null
-                        : Convert.ToDateTime(rowView["dateOfBirth"]),
-                    DateEnrolled = Convert.ToDateTime(rowView["dateEnrolled"])
+                                   ? (DateTime?)null
+                                   : (DateTime)rowView["dateOfBirth"],
+                    DateEnrolled = (DateTime)rowView["dateEnrolled"]
                 };
 
                 db.UpdateStudent(student);
@@ -168,6 +173,7 @@ namespace PROG2111_FinalPhase5
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void btnUpdateProgram_Click(object sender, RoutedEventArgs e)
         {

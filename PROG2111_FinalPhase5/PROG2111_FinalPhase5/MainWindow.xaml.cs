@@ -37,14 +37,15 @@ namespace PROG2111_FinalPhase5
             db.RefreshProgramTable();
             db.RefreshStudentTable();
 
-            readStudentDataGrid.ItemsSource = db.studentTable.DefaultView;
             readProgramDataGrid.ItemsSource = db.programTable.DefaultView;
+            readStudentDataGrid.ItemsSource = db.studentTable.DefaultView;
+
+            // other read grids for courseTable, programCourseTable, etc.
             readCourseDataGrid.ItemsSource = db.courseTable.DefaultView;
             readProgramCourseDataGrid.ItemsSource = db.programCourseTable.DefaultView;
             readInstructorDataGrid.ItemsSource = db.instructorTable.DefaultView;
             readCourseOfferingDataGrid.ItemsSource = db.CourseOfferingTable.DefaultView;
             readCourseEnrollmentDataGrid.ItemsSource = db.CourseEnrollmentTable.DefaultView;
-            readInstructorAssignmentDataGrid.ItemsSource = db.InstructorAssignmentTable.DefaultView;
         }
 
         /// <summary>
@@ -193,6 +194,24 @@ namespace PROG2111_FinalPhase5
                 MessageBox.Show("Error inserting sample data:\n" + ex.Message, "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Add logic to handle student creation here
+            MessageBox.Show("Student Submit button clicked!");
+        }
+
+        private void btnCreateProgramSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Add logic to handle the Program Submit button click
+            MessageBox.Show("Program Submit button clicked!");
+        }
+
+        private void btnCreateInstructorAssignmentSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Add logic to handle instructor assignment submission
+            MessageBox.Show("Instructor Assignment Submitted!");
         }
     }
 }
