@@ -53,7 +53,7 @@ namespace PROG2111_FinalPhase5
 					break;
 			}
 		}
-        private void btnStudentSubmit_Click(object sender, RoutedEventArgs e)
+        private void btnCreateStudentSubmit_Click(object sender, RoutedEventArgs e)
         {
             bool error = false;
 
@@ -163,7 +163,7 @@ namespace PROG2111_FinalPhase5
             }
         }
 
-        private void btnProgramSubmit_Click(object sender, RoutedEventArgs e)
+        private void btnCreateProgramSubmit_Click(object sender, RoutedEventArgs e)
         {
             bool error = false;
 

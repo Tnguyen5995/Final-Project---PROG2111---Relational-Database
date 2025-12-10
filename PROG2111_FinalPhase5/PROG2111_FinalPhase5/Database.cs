@@ -34,6 +34,12 @@ namespace PROG2111_FinalPhase5
             CourseEnrollmentOfferingIdRelation = new DataRelation("FK_CourseEnrollment_OfferingId", CourseOfferingTable.Columns["offeringId"], CourseEnrollmentTable.Columns["offeringId"]);
             InstructorAssignmentInstructorIdRelation = new DataRelation("FK_InstructorAssignment_InstructorId", instructorTable.Columns["instructorId"], InstructorAssignmentTable.Columns["instructorId"]);
             InstructorAssignmentOfferingIdRelation = new DataRelation("FK_InstructorAssignment_OfferingId", CourseOfferingTable.Columns["offeringId"], InstructorAssignmentTable.Columns["offeringId"]);
+
+            _programRepository = new ProgramRepository();
+            _studentRepository = new StudentRepository();
+
+            RefreshProgramTable();
+            RefreshStudentTable();
         }
 
         public DataSet ds = new DataSet("DataSet");
@@ -55,38 +61,20 @@ namespace PROG2111_FinalPhase5
         public DataTable CourseOfferingTable = new CourseOfferingTable().CourseOfferingDataTable;
         public DataTable CourseEnrollmentTable = new CourseEnrollmentTable().CourseEnrollmentDataTable;
         public DataTable InstructorAssignmentTable = new InstructorAssignmentTable().InstructorAssignemntDataTable;
-    
-
-        // Main tables used by the UI
-        public DataTable StudentTable { get; private set; }
-        public DataTable ProgramTable { get; private set; }
-
-        // Compatibility properties – your existing UI uses lower-case names
-        public DataTable studentTable => StudentTable;
-        public DataTable programTable => ProgramTable;
 
         private readonly ProgramRepository _programRepository;
         private readonly StudentRepository _studentRepository;
-
-        public Database()
-        {
-            _programRepository = new ProgramRepository();
-            _studentRepository = new StudentRepository();
-
-            RefreshProgramTable();
-            RefreshStudentTable();
-        }
 
         // --- Load / Refresh ---
 
         public void RefreshProgramTable()
         {
-            ProgramTable = _programRepository.GetAllProgramsAsDataTable();
+            programTable = _programRepository.GetAllProgramsAsDataTable();
         }
 
         public void RefreshStudentTable()
         {
-            StudentTable = _studentRepository.GetAllStudentsAsDataTable();
+            studentTable = _studentRepository.GetAllStudentsAsDataTable();
         }
 
         // --- Program CRUD ----
